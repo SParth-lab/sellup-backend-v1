@@ -1,0 +1,124 @@
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+
+const userSchema = new mongoose.Schema({
+    name: { 
+        type: String, 
+        required: [true, 'Name is required'], 
+        trim: true 
+    },
+    lastName: { 
+        type: String, 
+        required: [true, 'Last name is required'], 
+        trim: true 
+    },
+    email: { 
+        type: String, 
+        required: [true, 'Email is required'], 
+        unique: true, 
+        trim: true, 
+        match: [/.+\@.+\..+/, 'Please fill a valid email address']
+    },
+    phoneNumber: { 
+        type: String, 
+        required: [true, 'Phone number is required'], 
+        unique: true, 
+        trim: true,
+        match: [/^\d{10}$/, 'Please fill a valid phone number'] 
+    },
+    fullAddress: { 
+        type: Object, 
+        required: [false, 'Full address is required']
+    },
+    address: { 
+        type: String, 
+        required: [false, 'Address is required'], 
+        trim: true 
+    },
+    area: { 
+        type: String, 
+        required: [false, 'Area is required'], 
+        trim: true 
+    },
+    city: { 
+        type: String, 
+        required: [false, 'City is required'], 
+        trim: true 
+    },
+    state: { 
+        type: String, 
+        required: [false, 'State is required'], 
+        trim: true 
+    },
+    country: { 
+        type: String, 
+        required: [false, 'Country is required'], 
+        trim: true 
+    },
+    zipCode: { 
+        type: String, 
+        required: [false, 'Zip code is required'], 
+        trim: true 
+    },
+    password: { 
+        type: String, 
+        required: [true, 'Password is required'] 
+    },
+    avatar: { 
+        type: String, 
+        default: "https://firebasestorage.googleapis.com/v0/b/luxuryhub-3b0f6.appspot.com/o/Site%20Images%2Fprofile.png?alt=media&token=6f94d26d-315c-478b-9892-67fda99d2cd6" 
+    },
+    role: { 
+        type: String, 
+        default: 'user', 
+        enum: ['user', 'admin'] 
+    },
+    isPhoneVerified: { 
+        type: Boolean, 
+        default: false 
+    },
+    isActive: { 
+        type: Boolean, 
+        default: true 
+    },
+    isDeleted: { 
+        type: Boolean, 
+        default: false 
+    },
+    productLimit: {
+        type: Number,
+        default: 10
+    }, 
+    productCount: {
+        type: Number,
+        default: 0
+    }
+}, { 
+    timestamps: true 
+});
+
+// Method to generate password hash
+userSchema.statics.generatePasswordHash = async function(password) {
+    try {
+        const hash = await bcrypt.hash(password, 10);
+        return { hash };
+    } catch (err) {
+        throw err;
+    }
+};
+
+// Method to compare password
+userSchema.statics.comparePassword = async function(candidatePassword, hashedPassword) {
+    try {
+        const isMatch = await bcrypt.compare(candidatePassword, hashedPassword);
+        if (!isMatch) {
+            return { err: true };
+        }
+        return { result: true };
+    } catch (err) {
+        return { err: true };
+    }
+};
+
+const User = mongoose.model("User", userSchema);
+export default User;
