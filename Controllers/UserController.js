@@ -8,8 +8,8 @@ dotenv.config();
 
 export const createUser = {
     validator: async (req, res, next) => {
-        const { name, lastName, email, phoneNumber, address, area, city, state, country, zipCode, password } = req.body;
-        if (!name || !lastName || !email || !phoneNumber || !address || !area || !city || !state || !country || !zipCode || !password) {
+        const { name, lastName, email, phoneNumber, address, area, city, state, zipCode, password } = req.body;
+        if (!name || !lastName || !email || !phoneNumber || !address || !area || !city || !state || !zipCode || !password) {
             return res.status(400).send({error: "Please Fill all the Fields"});
         }
         next();
@@ -130,8 +130,8 @@ export const login = {
 
             return res.status(200).json({
                 "success": true,
-                accessToken: token,
-                user: _user
+                token: token,
+                userInfo: _user
             });
 
         }

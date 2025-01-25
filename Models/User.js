@@ -53,7 +53,8 @@ const userSchema = new mongoose.Schema({
     country: { 
         type: String, 
         required: [false, 'Country is required'], 
-        trim: true 
+        trim: true ,
+        default: "India"
     },
     zipCode: { 
         type: String, 

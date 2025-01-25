@@ -37,19 +37,14 @@ export const createProduct = {
 
 export const getProducts = {
     validator: async (req, res, next) => {
-        const { skip, limit } = req.query;
-        if (!skip || !limit) {
-            return res.status(400).send({ error: "Please provide page and limit" });
-        }
         next();
     },
     controller: async (req, res) => {
 
-        const { skip, limit, category, subCategory, location, area, search, minPrice, maxPrice, userId, productId } = req.query;
+        const { category, subCategory, location, area, search, minPrice, maxPrice, userId, productId } = req.query;
         const { _id } = req.user;
         const criteria = {
             isDelete: false,
-            userId: _id,
         };
         // Add filters to the query object
         if (category) criteria.category = category?.toLowerCase();
@@ -65,11 +60,11 @@ export const getProducts = {
         // Fetch products with pagination and sorting by price
         const products = await Product.find(criteria)
             .sort({ price: 1 })
-            .skip(parseInt(skip))
-            .limit(parseInt(limit))
-            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, profileImage: 1, fullAddress: 1, productCount: 1, productLimit: 1 }).lean();
+            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1 }).lean();
         if (productId) {
-            const reviews = await Review.find({productId: productId, isDelete: false}).lean();
+            const reviews = await Review.find({productId: productId, isDelete: false})
+                .populate('userId', { name: 1, lastName: 1,avatar: 1 })
+                .lean();
             const product = products.find(product => product._id + "" === productId);
             product.reviews = reviews || [];
             return res.status(200).send({ message: "Product Fetched Successfully", product });

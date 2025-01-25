@@ -9,7 +9,7 @@ import ReviewRoute from "./Routes/ReviewRoute.js";
 import CategoryRoute from "./Routes/CategoryRoute.js";
 dotenv.config();
 const app = express();
-app.use(express.json());
+app.use(express.json({ extended: true })); // Added extended: true to support nested objects
 
 var corsOptions = {
   credentials: true,
@@ -45,31 +45,4 @@ const server = app.listen(port, () => {
   console.log(`Server is Listening on PORT ${port}`);
 })
 
-const io = new Server(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-    credentials: true,
-  }
-});
-
-
-global.onlineUsers = new Map();
-io.on("connection", (socket) => {
-  global.chatSocket = socket;
-
-  socket.on("add-user", (userId) => {
-    // console.log("Added ", userId);
-    onlineUsers.set(userId, socket.id);
-  });
-
-  socket.on("send-msg", (data) => {
-    // console.log(data);
-    // console.log(onlineUsers);
-    const sendUserSocket = onlineUsers.get(data.to);
-    // console.log(sendUserSocket);
-    if (sendUserSocket) {
-      console.log("Mesg REceive fired");
-      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
-    }
-  });
-});
+new Server(server);
