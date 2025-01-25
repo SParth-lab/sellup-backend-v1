@@ -38,9 +38,10 @@ const addReview = {
             reviewText,
             rating,
         });
-        await review.save();
+        const savedReview = await review.save();
+        const populatedReview = await Review.populate(savedReview, { path: "userId", select: { name: 1, lastName: 1, avatar: 1 } });
         await calculateAverageRating(productId);
-        return res.status(200).send({ message: "Review added successfully", review });
+        return res.status(200).send({ message: "Review added successfully", review: populatedReview });
     }
 }
 
@@ -66,7 +67,7 @@ const editReview = {
                 rating
             }
         }
-        const review =await Review.findOneAndUpdate({_id: reviewId}, update, { new: true }).lean();
+        const review =await Review.findOneAndUpdate({_id: reviewId}, update, { new: true }).populate("userId", {name: 1, lastName: 1, avatar: 1}).lean();
         if (!review) {
             return res.status(400).send({ error: "Review not found" });
         }
