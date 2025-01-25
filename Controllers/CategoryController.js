@@ -1,7 +1,7 @@
-import Category from "../Models/Category.js";
+const Category = require("../Models/Category.js");
 
 
-export const createCategory = {
+const createCategory = {
     validator: async (req, res, next) => {
         const { name, colorCode, image, description } = req.body;
         if (!name || !colorCode || !image || !description) {
@@ -30,7 +30,7 @@ export const createCategory = {
     }
 }
 
-export const getCategories = {
+const getCategories = {
     controller: async (req, res, next) => {
         try {
             const categories = await Category.find().lean();
@@ -43,3 +43,5 @@ export const getCategories = {
     }
 
 }
+
+module.exports = { createCategory, getCategories };

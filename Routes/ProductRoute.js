@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { createProduct, getProducts, editProduct, deleteProduct } from '../Controllers/ProductController.js';
-import verifyToken  from '../Helper/VerifyToken.js';
+const { Router } = require('express');
+const { createProduct, getProducts, editProduct, deleteProduct } = require('../Controllers/ProductController.js');
+const verifyToken  = require('../Helper/VerifyToken.js');
 
 const router = Router();
 
@@ -14,4 +14,4 @@ router.delete("/delete", verifyToken, deleteProduct.validator, deleteProduct.con
 
 
 
-export default router;
+module.exports = router;

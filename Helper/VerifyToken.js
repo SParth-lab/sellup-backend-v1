@@ -1,6 +1,6 @@
-import JWT from 'jsonwebtoken';
-import User from "../Models/User.js";
-import dotenv from 'dotenv';
+const JWT = require('jsonwebtoken');
+const User = require("../Models/User.js");
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -47,4 +47,4 @@ const VerifyToken = async (req, res, next) => {
     }
 }
 
-export default VerifyToken;
+module.exports = VerifyToken;

@@ -1,48 +1,33 @@
-import express from "express";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import { Server } from 'socket.io';
-import cors from 'cors'
-import UserRoute from "./Routes/UserRoute.js";
-import ProductRoute from "./Routes/ProductRoute.js";
-import ReviewRoute from "./Routes/ReviewRoute.js";
-import CategoryRoute from "./Routes/CategoryRoute.js";
-dotenv.config();
-const app = express();
-app.use(express.json({ extended: true })); // Added extended: true to support nested objects
+const express = require("express");
+const cors = require("cors");
+const UserRoute = require("./routes/UserRoute")
+const ProductRoute = require("./routes/ProductRoute")
+const ReviewRoute = require("./routes/ReviewRoute")
+const CategoryRoute = require("./routes/CategoryRoute")
 
-var corsOptions = {
-  credentials: true,
-  origin: '*', // Removed whitelist and set origin to allow all
-  methods: ["GET", "PUT", "POST", "DELETE"],
-}
-app.use(cors(corsOptions))
-const port = process.env.PORT || 5000;
+require("./config/db.config")
 
-
-
-
+const app = express()
+app.use(cors())
+app.use(express.json());
 
 
 app.use("/users", UserRoute);
 app.use("/products", ProductRoute);
 app.use("/reviews", ReviewRoute);
 app.use("/categories", CategoryRoute);
-// app.use("/api/product", Product);
-// app.use("/api/review", Review);
+
+
 app.get("/", (req, res) => {
   return res.send("OK")
 });
 
+app.use('*', function (req, res) {
+  res.json({
+      statusCode: 404,
+      message: 'Page not found',
+      data: null,
+  });
+});
 
-
-
-mongoose.connect(process.env.MONGO_URL)
-  .then(() => console.log("Connected With DB Successfull"))
-  .catch((e) => console.log("Db Connection Failed", e));
-
-const server = app.listen(port, () => {
-  console.log(`Server is Listening on PORT ${port}`);
-})
-
-new Server(server);
+module.exports = app;

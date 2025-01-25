@@ -1,7 +1,7 @@
-import JWT from 'jsonwebtoken';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import Session from '../Models/Session.js';
+const JWT = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const Session = require('../Models/Session.js');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -30,4 +30,4 @@ const generateToken = async (user) => {
   }
 };
 
-export default generateToken;
+module.exports = generateToken;

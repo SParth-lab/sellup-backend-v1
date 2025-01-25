@@ -1,9 +1,9 @@
-import Review from "../Models/Review.js";
-import Product from "../Models/Product.js";
-import { calculateAverageRating } from "../Helper/product.js";
+const Review = require("../Models/Review.js");
+const Product = require("../Models/Product.js");
+const { calculateAverageRating } = require("../Helper/product.js");
 
 
-export const addReview = {
+const addReview = {
     validator: async (req, res, next) => {
         const { reviewText, rating, productId } = req.body;
         if (!reviewText || !rating || !productId) {
@@ -44,7 +44,7 @@ export const addReview = {
     }
 }
 
-export const editReview = {
+const editReview = {
     validator: async (req, res, next) => {
         const { reviewId, reviewText, rating } = req.body;
         if (!reviewId || !reviewText || !rating) {
@@ -75,7 +75,7 @@ export const editReview = {
     }
 }
 
-export const deleteReview = {
+const deleteReview = {
     validator: async (req, res, next) => {
         const { reviewId } = req.query;
         if (!reviewId) {
@@ -93,3 +93,5 @@ export const deleteReview = {
         return res.status(200).send({ message: "Review deleted successfully", review });
     }
 }
+
+module.exports = { addReview, editReview, deleteReview };

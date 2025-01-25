@@ -1,8 +1,8 @@
-import Product from "../Models/Product.js";
-import { updateProductLimit } from "../Helper/product.js";
-import Review from "../Models/Review.js";
+const Product = require("../Models/Product.js");
+const { updateProductLimit } = require("../Helper/product.js");
+const Review = require("../Models/Review.js");
 
-export const createProduct = {
+const createProduct = {
     validator: async (req, res, next) => {
         const { title, description, price, category, subCategory, location, images } = req.body;
         if (!title || !description || !price || !category || !subCategory || !location || !images) {
@@ -35,7 +35,7 @@ export const createProduct = {
 
 }
 
-export const getProducts = {
+const getProducts = {
     validator: async (req, res, next) => {
         next();
     },
@@ -73,7 +73,7 @@ export const getProducts = {
     }
 }
 
-export const editProduct = {
+const editProduct = {
     validator: async (req, res, next) => {
         const { productId } = req.query;
         if (!productId) {
@@ -103,7 +103,7 @@ export const editProduct = {
     }
 }
 
-export const deleteProduct = {
+const deleteProduct = {
     validator: async (req, res, next) => {
         const {productId} = req.query;
         if (!productId) {
@@ -124,3 +124,5 @@ export const deleteProduct = {
         return res.status(200).send({message: "Product deleted successfully", product});
     }
 }
+
+module.exports = { createProduct, getProducts, editProduct, deleteProduct };

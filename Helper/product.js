@@ -1,8 +1,8 @@
-import User from "../Models/User.js";
-import Review from "../Models/Review.js";
-import Product from "../Models/Product.js";
-import mongoose from "mongoose";
-export const updateProductLimit = async (userId, isAddProduct, res) => {
+const User = require("../Models/User.js");
+const Review = require("../Models/Review.js");
+const Product = require("../Models/Product.js");
+const mongoose = require("mongoose");
+const updateProductLimit = async (userId, isAddProduct, res) => {
     const user = await User.findOne({_id: userId}).select({productLimit:1, productCount:1}).lean();
     if (isAddProduct) {
         if (user.productCount >= user.productLimit) {
@@ -15,7 +15,7 @@ export const updateProductLimit = async (userId, isAddProduct, res) => {
 }
 
 
-export const calculateAverageRating = async (productId) => {
+const calculateAverageRating = async (productId) => {
     try {
       // Validate the productId parameter
       if (!productId) {
@@ -55,3 +55,5 @@ export const calculateAverageRating = async (productId) => {
       throw new Error('Failed to calculate average rating'); // Throw error for error handling
     }
   };
+
+module.exports = { updateProductLimit, calculateAverageRating };

@@ -1,12 +1,12 @@
-import JWT from "jsonwebtoken";
-import dotenv from "dotenv";
-import CryptoJS from "crypto-js";
-import User from "../Models/User.js"; // Adjusted import path
-import generateToken from "../Helper/generateToken.js";
+const JWT = require("jsonwebtoken");
+const dotenv = require("dotenv");
+const CryptoJS = require("crypto-js");
+const User = require("../Models/User.js"); // Adjusted import path
+const generateToken = require("../Helper/generateToken.js");
 dotenv.config();
 
 
-export const createUser = {
+const createUser = {
     validator: async (req, res, next) => {
         const { name, lastName, email, phoneNumber, address, area, city, state, zipCode, password } = req.body;
         if (!name || !lastName || !email || !phoneNumber || !address || !area || !city || !state || !zipCode || !password) {
@@ -83,8 +83,9 @@ export const createUser = {
     }
 }
 
-export const login = {
+const login = {
     validator: async (req, res, next) => {
+        console.log("object -=-=-=- req  -=-=-=- ", req)
         const { email, phoneNumber, password } = req.body;
         if ((!email || !phoneNumber) && !password) {
             return res.status(400).send({error: "Please Fill email or phoneNumber and password"});
@@ -142,7 +143,7 @@ export const login = {
     }
 }
 
-export const changePassword = {
+const changePassword = {
     validator: async (req, res, next) => {
         const { newPassword } = req.body;
         if (!newPassword) {
@@ -160,7 +161,7 @@ export const changePassword = {
     }
 }
 
-export const editUser = {
+const editUser = {
     controller: async (req, res) => {
         try {
             const {  name, lastName, email, phoneNumber, address, area, city, state, country, zipCode } = req.body;
@@ -202,3 +203,5 @@ export const editUser = {
         }
     }
 }
+
+module.exports = { createUser, login, changePassword, editUser };
