@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const UserRoute = require("./routes/UserRoute")
-const ProductRoute = require("./routes/ProductRoute")
-const ReviewRoute = require("./routes/ReviewRoute")
-const CategoryRoute = require("./routes/CategoryRoute")
+const UserRoute = require("./routes/UserRoute.js")
+const ProductRoute = require("./routes/ProductRoute.js")
+const ReviewRoute = require("./routes/ReviewRoute.js")
+const CategoryRoute = require("./routes/CategoryRoute.js")
 
-require("./config/db.config")
+require("./config/db.config.js")
 
 const app = express()
 app.use(cors())
