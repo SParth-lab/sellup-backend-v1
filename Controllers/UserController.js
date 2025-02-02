@@ -164,7 +164,7 @@ const changePassword = {
 const editUser = {
     controller: async (req, res) => {
         try {
-            const {  name, lastName, email, phoneNumber, address, area, city, state, country, zipCode } = req.body;
+            const {  name, lastName, email, phoneNumber, address, area, city, state, country, zipCode, avatar } = req.body;
             const { _id: userId } = req.user;
             const updateFields = {
                 $set: {
@@ -177,7 +177,8 @@ const editUser = {
                     city,
                     state,
                     country,
-                    zipCode
+                    zipCode,
+                    avatar
                 }
             };
             if (address || area || city || state || country || zipCode) {
