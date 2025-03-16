@@ -2,10 +2,7 @@ require("dotenv").config();
 const nodemailer = require("nodemailer");
 const redis = require("redis");
 
-// Connect to Redis
-const client = redis.createClient();
 
-client.connect().catch(console.error);
 
 
 // Generate OTP
@@ -13,6 +10,11 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 
 const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => {
     if (!otp) otp = generateOTP();
+
+        // Connect to Redis
+        const client = redis.createClient();
+
+        client.connect().catch(console.error);
 
     console.log("🪩🪩🪩 -=-=-=-=-=-= ", otp)
     await client.setEx(email, 300, otp);
