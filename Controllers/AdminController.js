@@ -4,7 +4,6 @@ import User from "../Models/User.js";
 
 export const login = {
     validator: async (req, res, next) => {
-        console.log("object -=-=-=- req  -=-=-=- ", req)
         const { email, phoneNumber, password } = req.body;
         if ((!email || !phoneNumber) && !password) {
             return res.status(400).send({error: "Please Fill email or phoneNumber and password"});

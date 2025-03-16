@@ -93,6 +93,10 @@ const userSchema = new mongoose.Schema({
     productCount: {
         type: Number,
         default: 0
+    },
+    isEmailVerified: {
+        type: Boolean,
+        default: false
     }
 }, { 
     timestamps: true 

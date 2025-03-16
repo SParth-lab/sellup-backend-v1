@@ -95,4 +95,27 @@ const deleteReview = {
     }
 }
 
-module.exports = { addReview, editReview, deleteReview };
+
+const getReviews = {
+    validator: async (req, res, next) => {
+        const { productId } = req.query;
+        if (!productId) {
+            return res.status(400).send({ error: "Product ID is required" });
+        }
+        next();
+    },
+    controller: async (req, res) => {
+        const { productId } = req.query;
+        const criteria = {
+            productId,
+            isDelete: false
+        }
+        const reviews = await Review.find(criteria).populate("userId", {name: 1, lastName: 1, avatar: 1}).lean();
+        if (!reviews) {
+            return res.status(400).send({ error: "No reviews found" });
+        }
+        return res.status(200).send({ reviews });
+    }
+}
+
+module.exports = { addReview, editReview, deleteReview, getReviews };

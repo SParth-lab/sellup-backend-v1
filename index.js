@@ -4,7 +4,7 @@ const UserRoute = require("./Routes/UserRoute.js")
 const ProductRoute = require("./Routes/ProductRoute.js")
 const ReviewRoute = require("./Routes/ReviewRoute.js")
 const CategoryRoute = require("./Routes/CategoryRoute.js")
-
+const EmailRoute = require("./Routes/EmailRoute.js")
 require("./config/db.config.js")
 
 const app = express()
@@ -16,6 +16,7 @@ app.use("/users", UserRoute);
 app.use("/products", ProductRoute);
 app.use("/reviews", ReviewRoute);
 app.use("/categories", CategoryRoute);
+app.use("/email", EmailRoute);
 
 
 app.get("/", (req, res) => {
