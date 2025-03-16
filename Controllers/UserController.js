@@ -1,10 +1,7 @@
 const User = require("../Models/User.js"); // Adjusted import path
 const generateToken = require("../Helper/generateToken.js");
 const { UserVerificationTemplate, generateOTP, createEmailAndSend } = require("../Helper/Email.js");
-const redis = require("redis");
-const client = redis.createClient();
-
-client.connect().catch(console.error);
+const redisClient = require('../Helper/Redis.js')
 
 
 const createUser = {
@@ -256,7 +253,7 @@ const verifyUserEmail = {
         if (user.isEmailVerified) {
             return res.status(400).send({error: "User email already verified"});
         }
-        const storedOTP = await client.get(email);
+        const storedOTP = await redisClient.get(email);
         if (storedOTP+"" !== otp+"") {
             return res.status(400).send({error: "Invalid OTP"});
         }
