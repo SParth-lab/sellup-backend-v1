@@ -25,6 +25,7 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
         },
     });
 
+    console.log("🪩🪩🪩 -=-=-=-=-=-= ", transporter)
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
