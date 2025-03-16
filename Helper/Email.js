@@ -17,7 +17,7 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
         // client.connect().catch(console.error);
 
     console.log("🪩🪩🪩 -=-=-=-=-=-= ", otp)
-    await client.setEx(email, 300, otp);
+    // await client.setEx(email, 300, otp);
 
     // Nodemailer Transporter
     const transporter = nodemailer.createTransport({
