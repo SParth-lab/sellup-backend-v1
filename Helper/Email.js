@@ -1,6 +1,6 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
-const redisClient = require('./Redis.js');
+const client = require('./Redis.js');
 
 
 
@@ -12,7 +12,7 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
     if (!otp) otp = generateOTP();
 
     console.log("🪩🪩🪩 -=-=-=-=-=-= ", otp)
-    await redisClient.setEx(email, 300, otp);
+    await client.setEx(email, 300, otp);
 
     // Nodemailer Transporter
     const transporter = nodemailer.createTransport({

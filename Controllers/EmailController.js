@@ -1,5 +1,5 @@
 const { createEmailAndSend, OTPTemplate, generateOTP } = require("../Helper/Email.js");
-const redisClient = require('../Helper/Redis.js')
+const client = require('../Helper/Redis.js')
 
 // API to send OTP
 const sendEmail = {
@@ -14,7 +14,7 @@ const sendEmail = {
         const emailTemplate = OTPTemplate(otp);
         const subject = "Your OTP Code";
         try {
-            await redisClient.del(email);
+            await client.del(email);
             await createEmailAndSend(email, subject, emailTemplate, otp);
             // here delete all old otp from redis
             return res.status(200).json({ message: "OTP sent successfully" });
