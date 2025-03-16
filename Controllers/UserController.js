@@ -209,7 +209,6 @@ const editUser = {
 const SendUserVerificationEmail = {
     validator: async (req, res, next) => {
         const { email } = req.body;
-        console.log("Here -=-=-= SendUserVerificationEmail -=-=-=-=", email)
         if (!email) {
             return res.status(400).send({error: "Please enter email"});
         }
@@ -218,7 +217,6 @@ const SendUserVerificationEmail = {
     controller: async (req, res) => {
         const { email } = req.body;
         const user = await User.findOne({email}).lean();
-        console.log("Here -=-=-= SendUserVerificationEmail -=-=-=-=", user)
 
         if (!user) {
             return res.status(400).send({error: "User not found"});
@@ -230,7 +228,6 @@ const SendUserVerificationEmail = {
         const otp = generateOTP();
         const emailTemplate = UserVerificationTemplate(user.name, user.lastName, otp);
         const subject = "User Verification Email";
-        console.log("Helloooooooooo -0=-=-=-=-=-=-=-= ", [otp, emailTemplate, subject])
         try {
             await createEmailAndSend(email, subject, emailTemplate, otp);
             // here delete all old otp from redis

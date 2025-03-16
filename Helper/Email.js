@@ -14,6 +14,7 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => {
     if (!otp) otp = generateOTP();
 
+    console.log("🪩🪩🪩 -=-=-=-=-=-= ", otp)
     await client.setEx(email, 300, otp);
 
     // Nodemailer Transporter
@@ -25,7 +26,8 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
         },
     });
 
-    console.log("🪩🪩🪩 -=-=-=-=-=-= ", transporter)
+    console.log("🪩🪩🪩 transporter -=-=-=-=-=-= ", transporter)
+
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -33,11 +35,17 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
         subject: subject,
         html: emailTemplate,
     };
+    console.log("🪩🪩🪩 mailOptions -=-=-=-=-=-= ", mailOptions)
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) return console.log(error);
-        console.log("Email sent: " + info.response);
-    });
+    try {
+        transporter.sendMail(mailOptions, (error, info) => {
+            console.log("error, info  -=-=-=-=-=-=-=-=-=-=-= ", error, info)
+          if (error) return console.log(error);
+          console.log("Email sent: " + info.response);
+        });
+      } catch (error) {
+        console.log(error);
+      }
 }
 
 
