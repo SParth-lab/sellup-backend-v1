@@ -12,9 +12,9 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
     if (!otp) otp = generateOTP();
 
         // Connect to Redis
-        const client = redis.createClient();
+        // const client = redis.createClient();
 
-        client.connect().catch(console.error);
+        // client.connect().catch(console.error);
 
     console.log("🪩🪩🪩 -=-=-=-=-=-= ", otp)
     await client.setEx(email, 300, otp);
