@@ -1,20 +1,22 @@
 const { createClient } = require('redis');
 
-(async () => {
+const client = async () => {
   // Connect to your internal Redis instance using the REDIS_URL environment variable
   // The REDIS_URL is set to the internal Redis URL e.g. redis://red-343245ndffg023:6379
   console.log(" process.env.REDIS_URL -=-=-= ", process.env.REDIS_URL)
-  const client = createClient({
+  const redisClient = createClient({
       url: process.env.REDIS_URL
   });
 
-  client.on('error', (err) => console.log('Redis Client Error', err));
+  redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
-  await client.connect();
+  await redisClient.connect();
 
   // Send and retrieve some values
-  await client.set('key', 'node redis');
-  const value = await client.get('key');
+  await redisClient.set('key', 'node redis');
+  const value = await redisClient.get('key');
 
   console.log("found value: ", value)
-})();
+}
+
+module.exports = client;
