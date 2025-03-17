@@ -1,0 +1,14 @@
+node_modules/
+.env
+npm-debug.log
+.idea/
+log/
+*~
+log/
+newrelic_agent.log
+.nvmrc
+node_modules1
+.history
+.vscode
+.terraform
+.DS_Store
