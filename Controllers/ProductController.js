@@ -41,7 +41,9 @@ const getProducts = {
     },
     controller: async (req, res) => {
 
-        const { category, subCategory, location, area, search, minPrice, maxPrice, userId, productId } = req.query;
+        let { category, subCategory, location, area, search, minPrice, maxPrice, userId, productId, limit = 20, skip = 0 } = req.query;
+        limit = parseInt(limit);
+        skip = parseInt(skip);
         const { _id } = req.user;
         const criteria = {
             isDelete: false,
@@ -60,7 +62,7 @@ const getProducts = {
         // Fetch products with pagination and sorting by price
         const products = await Product.find(criteria)
             .sort({ price: 1 })
-            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1 }).lean();
+            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1 }).lean().limit(limit).skip(skip);
         if (productId) {
             const reviews = await Review.find({productId: productId, isDelete: false})
                 .populate('userId', { name: 1, lastName: 1,avatar: 1 })
