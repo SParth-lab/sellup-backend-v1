@@ -4,14 +4,17 @@ const Product = require("../Models/Product.js");
 const mongoose = require("mongoose");
 const updateProductLimit = async (userId, isAddProduct, res) => {
     const user = await User.findOne({_id: userId}).select({productLimit:1, productCount:1}).lean();
-    if (isAddProduct) {
-        if (user.productCount >= user.productLimit) {
-            return res.status(400).send({error: "You have reached the product limit"});
-        }
-        await User.updateOne({_id: userId}, {$inc: {productCount: 1}});
-    }else {
-        await User.updateOne({_id: userId}, {$inc: {productCount: -1}});
+    if (!user) {
+        return res.status(400).send({error: "User not found"});
     }
+      if (isAddProduct) {
+          if (user.productCount >= user.productLimit) {
+              return res.status(400).send({error: "You have reached the product limit"});
+          }
+          await User.updateOne({_id: userId}, {$inc: {productCount: 1}});
+      }else if (user.productCount > 0) {
+          await User.updateOne({_id: userId}, {$inc: {productCount: -1}});
+      }
 }
 
 
