@@ -63,7 +63,16 @@ const productSchema = new mongoose.Schema({
   averageRating: {
     type: Number,
     default: 0
-  }
+  },
+  isCall : {
+    type: Boolean,
+    default: false
+  },
+  isWhatsapp : {
+    type: Boolean,
+    default: false
+  },
+  
 }, { 
   timestamps: true,
   versionKey: false // Disable the __v field
