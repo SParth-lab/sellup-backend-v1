@@ -1,7 +1,5 @@
 const User = require("../Models/User.js"); // Adjusted import path
 const generateToken = require("../Helper/generateToken.js");
-const { UserVerificationTemplate, generateOTP, createEmailAndSend, OTPTemplate } = require("../Helper/Email.js");
-const client = require('../Helper/Redis.js')
 
 
 const createUser = {
