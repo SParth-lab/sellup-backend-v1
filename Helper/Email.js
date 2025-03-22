@@ -13,27 +13,39 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
     await client.setEx(email, 300, otp);
 
     // Nodemailer Transporter
+    // For Gmail
+    // const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     auth: {
+    //         user: process.env.EMAIL_USER,
+    //         pass: process.env.EMAIL_PASS,
+    //     },
+    // });
+
+    // For Hostinger
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.SMTP_HOST,
+        port: 465,
+        secure: true,
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
-    });
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+        }
+    })
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: process.env.SMTP_USER,
         to: email,
         subject: subject,
         html: emailTemplate,
     };
     try {
         transporter.sendMail(mailOptions, (error, info) => {
-          if (error) return console.log(error);
-          console.log("Email sent: " + info.response);
+            if (error) return console.log(error);
+            console.log("Email sent: " + info.response);
         });
-      } catch (error) {
+    } catch (error) {
         console.log(error);
-      }
+    }
 }
 
 
