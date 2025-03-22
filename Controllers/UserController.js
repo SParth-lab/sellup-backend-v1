@@ -1,6 +1,6 @@
 const User = require("../Models/User.js"); // Adjusted import path
 const generateToken = require("../Helper/generateToken.js");
-const { UserVerificationTemplate, generateOTP, createEmailAndSend } = require("../Helper/Email.js");
+const { UserVerificationTemplate, generateOTP, createEmailAndSend, OTPTemplate } = require("../Helper/Email.js");
 const client = require('../Helper/Redis.js')
 
 
@@ -202,64 +202,4 @@ const editUser = {
     }
 }
 
-
-const SendUserVerificationEmail = {
-    validator: async (req, res, next) => {
-        const { email } = req.body;
-        if (!email) {
-            return res.status(400).send({error: "Please enter email"});
-        }
-        next();
-    },
-    controller: async (req, res) => {
-        const { email } = req.body;
-        const user = await User.findOne({email}).lean();
-
-        if (!user) {
-            return res.status(400).send({error: "User not found"});
-        }
-        if (user.isEmailVerified) {
-            return res.status(400).send({error: "User email already verified"});
-        }
-        // send email verification
-        const otp = generateOTP();
-        const emailTemplate = UserVerificationTemplate(user.name, user.lastName, otp);
-        const subject = "User Verification Email";
-        try {
-            await createEmailAndSend(email, subject, emailTemplate, otp);
-            // here delete all old otp from redis
-            return res.status(200).json({ message: "OTP sent successfully" });
-        } catch (error) {
-            return res.status(500).json({ message: "Email failed to send", error });
-        }
-    }
-}
-
-
-const verifyUserEmail = {
-    validator: async (req, res, next) => {
-        const { email, otp } = req.body;
-        if (!email || !otp) {
-            return res.status(400).send({error: "Please enter email and otp"});
-        }
-        next();
-    },
-    controller: async (req, res) => {
-        const { email, otp } = req.body;
-        const user = await User.findOne({email}).lean();
-        if (!user) {
-            return res.status(400).send({error: "User not found"});
-        }
-        if (user.isEmailVerified) {
-            return res.status(400).send({error: "User email already verified"});
-        }
-        const storedOTP = await client.get(email);
-        if (storedOTP+"" !== otp+"") {
-            return res.status(400).send({error: "Invalid OTP"});
-        }
-        const updatedUser = await User.findByIdAndUpdate(user._id, {isEmailVerified: true}, {new: true});
-        return res.status(200).send({message: "User email verified successfully", user: updatedUser});
-    }
-}
-
-module.exports = { createUser, login, changePassword, editUser, SendUserVerificationEmail, verifyUserEmail };
+module.exports = { createUser, login, changePassword, editUser };
