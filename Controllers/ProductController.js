@@ -11,7 +11,7 @@ const createProduct = {
         next();
     },
     controller: async (req, res) => {
-        const { title, description, price, category, subCategory, location, images } = req.body;
+        const { title, description, price, category, subCategory, location, images, compressedImages } = req.body;
         const { _id: userId } = req.user;
         if (images.length > 5) {
             return res.status(400).send({ error: "Maximum 5 images allowed" });
@@ -25,6 +25,7 @@ const createProduct = {
             subCategory: subCategory.toLowerCase(),
             location,
             images,
+            compressedImages,
             userId: userId, // User ID from the JWT payload
         });
         await product.save();
@@ -85,7 +86,7 @@ const editProduct = {
     },
     controller: async (req, res) => {
         const {productId} = req.query;
-        const {title, description, price, location, images} = req.body;
+        const {title, description, price, location, images, compressedImages} = req.body;
         try {
             let editedProduct = {};
             if (title) editedProduct.title = title;
@@ -93,6 +94,7 @@ const editProduct = {
             if (price) editedProduct.price = price;
             if (location) editedProduct.location = location;
             if (images) editedProduct.images = images;
+            if (compressedImages) editedProduct.compressedImages = compressedImages;
 
             const product = await Product.findByIdAndUpdate(productId, editedProduct, { new: true });
             if (!product) {

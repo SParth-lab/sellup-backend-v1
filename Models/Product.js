@@ -38,6 +38,15 @@ const productSchema = new mongoose.Schema({
     },
     required: [true, 'Product location is required']
   },
+  compressedImages: { 
+    type: [{ type: String, required: true }], 
+    validate: {
+      validator: function(v) {
+        return v.length <= 5;
+      },
+      message: 'A product can have a maximum of 5 images'
+    }
+  },
   images: { 
     type: [{ type: String, required: true }], 
     validate: {
