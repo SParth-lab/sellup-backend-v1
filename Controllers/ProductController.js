@@ -114,14 +114,9 @@ const deleteProduct = {
         next();
     },
     controller: async (req, res) => {
-        const {productId, isHardDelete} = req.query;  
+        const {productId } = req.query;  
         const {_id: userId} = req.user;
-        let product = [];
-        if (isHardDelete === 'true' || isHardDelete === true) {
-            product = await Product.findByIdAndDelete(productId);
-        } else {
-            product = await Product.findByIdAndUpdate(productId, {isDelete: true, userId: userId}, {new: true});
-        }
+        let product = await Product.findByIdAndUpdate(productId, {isDelete: true, userId: userId}, {new: true});
         await updateProductLimit(userId, false, res);
         return res.status(200).send({message: "Product deleted successfully", product});
     }

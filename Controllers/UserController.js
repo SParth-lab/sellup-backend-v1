@@ -202,4 +202,33 @@ const editUser = {
     }
 }
 
-module.exports = { createUser, login, changePassword, editUser };
+const forgotPassword = {
+    validator: async (req, res, next) => {
+        const { email, newPassword } = req.body;
+        if (!email || !newPassword) {
+            return res.status(400).send({error: "Please enter email and new password"});
+        }
+        next();
+    },
+    controller: async (req, res) => {
+
+        const { email, newPassword } = req.body;
+        const user = await User.findOne({email, isDeleted: false, isActive: true}).select({isDeleted: 1, isActive: 1}).lean();
+        if (!user) {
+            return res.status(400).send({error: "User not found"});
+        }
+        if (user.isDeleted) {
+            return res.status(400).send({error: "User is Deleted"});
+        }
+        if (!user.isActive) {
+            return res.status(400).send({error: "User is Not Active"});
+        }
+
+        const passwordHashResult = await User.generatePasswordHash(newPassword);
+        const { hash } = passwordHashResult || {};
+        const updatedUser = await User.findByIdAndUpdate(user._id, {password: hash}, {new: true});
+        return res.status(200).send({message: "Password Forgot Successfully", user: updatedUser});
+    }
+}
+
+module.exports = { createUser, login, changePassword, editUser, forgotPassword };
