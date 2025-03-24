@@ -8,7 +8,7 @@ const categorySchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     isDelete: {
         type: Boolean,
@@ -19,11 +19,15 @@ const categorySchema = new mongoose.Schema({
     }],
     colorCode: {
         type: String,
-        required: true
+        required: false
     },
     image: {
         type: String,
-        required: true
+        required: false
+    },
+    isOtherCategory: {
+        type: Boolean,
+        default: false
     }
 }, { 
   timestamps: true,

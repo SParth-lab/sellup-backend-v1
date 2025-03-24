@@ -61,6 +61,11 @@ const productSchema = new mongoose.Schema({
     ref: 'User', 
     required: [true, 'User ID is required'] 
   },
+  categoryId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Category', 
+    required: [true, 'Category ID is required'] 
+  },
   isDelete: { 
     type: Boolean, 
     default: false 
