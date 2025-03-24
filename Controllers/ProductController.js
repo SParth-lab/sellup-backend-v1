@@ -5,8 +5,8 @@ const CategoryModel = require("../Models/Category.js");
 
 const createProduct = {
     validator: async (req, res, next) => {
-        const { title, description, price, category, location, images, compressedImages } = req.body;
-        if (!title || !description || !price || !category || !location || !images || !compressedImages) {
+        const { title, description, price, category, location, images, compressedImages, categoryId } = req.body;
+        if (!title || !description || !price || !category || !location || !images || !compressedImages || !categoryId) {
             return res.status(400).send({ error: "Please Fill all the fields" });
         }
         next();
@@ -17,46 +17,52 @@ const createProduct = {
         if (images.length > 5) {
             return res.status(400).send({ error: "Maximum 5 images allowed" });
         }
-        let categoryData = {
-            category: category?.toLowerCase(),
-            subCategory: subCategory?.toLowerCase(),
-            categoryId: categoryId
-        };
 
-        if (!categoryId) {
-            let categoryData = {
-                name: category.toLowerCase(),
-                description: 'Other Category',
-                colorCode: "#000000",
-                image: images[0],
-                isOtherCategory: true
-            }
-            if (subCategory) categoryData.subCategories = [subCategory.toLowerCase()];
-            const _category = await CategoryModel.create(categoryData);
-            if (!_category) {
-                return res.status(400).send({ error: "Category not created" });
-            } else {
-                categoryData.categoryId = _category?._id;
-                _category.subCategories?.length > 0 && (categoryData.subCategory = _category.subCategories[0]);
-                categoryData.category = _category.category;
-            }
-        } else {
-            const category = await CategoryModel.findById(categoryId);
-            if (!category) {
-                return res.status(400).send({ error: "Category not found" });
-            }
+        const _category = await CategoryModel.findOne({_id: categoryId}).lean();
+        if (!_category) {
+            return res.status(400).send({ error: "Category not found" });
         }
+
+        // let categoryData = {
+        //     category: category?.toLowerCase(),
+        //     subCategory: subCategory?.toLowerCase(),
+        //     categoryId: categoryId
+        // };
+
+        // if (!categoryId) {
+        //     let categoryData = {
+        //         name: category.toLowerCase(),
+        //         description: 'Other Category',
+        //         colorCode: "#000000",
+        //         image: images[0],
+        //         isOtherCategory: true
+        //     }
+        //     if (subCategory) categoryData.subCategories = [subCategory.toLowerCase()];
+        //     const _category = await CategoryModel.create(categoryData);
+        //     if (!_category) {
+        //         return res.status(400).send({ error: "Category not created" });
+        //     } else {
+        //         categoryData.categoryId = _category?._id;
+        //         _category.subCategories?.length > 0 && (categoryData.subCategory = _category.subCategories[0]);
+        //         categoryData.category = _category.category;
+        //     }
+        // } else {
+        //     const category = await CategoryModel.findById(categoryId);
+        //     if (!category) {
+        //         return res.status(400).send({ error: "Category not found" });
+        //     }
+        // }
         // Create a new product
         const product = await Product.create({
             title,
             description,
             price,
-            category: categoryData.category,
-            subCategory: categoryData.subCategory,
+            category: _category.name,
+            subCategory: subCategory ? subCategory.toLowerCase() : _category.subCategories[0],
             location,
             images,
             compressedImages,
-            categoryId: categoryData.categoryId,
+            categoryId: _category._id,
             userId: userId, // User ID from the JWT payload
         });
         await product.save();
@@ -90,7 +96,7 @@ const getProducts = {
         if (maxPrice !== undefined) criteria.price = { ...criteria.price, $lte: parseFloat(maxPrice) };
         if (userId) criteria.userId = userId;
         if (productId) criteria._id = productId;
-        if (categoryId) criteria.categoryId = categoryId;
+        // if (categoryId) criteria.categoryId = categoryId;
 
         // Fetch products with pagination and sorting by price
         const products = await Product.find(criteria)
