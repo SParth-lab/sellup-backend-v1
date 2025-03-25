@@ -1,0 +1,21 @@
+const Area = require("../Models/Area.js");
+
+const getArea = {
+    controller: async (req, res, next) => {
+        const { skip = 0, limit = 10, searchTerm } = req.body;
+        try {
+            const criteria = {
+                isDeleted: false,
+            }
+            if (searchTerm?.length > 0) {
+                criteria.area = { $regex: searchTerm, $options: "i" };
+            }
+            const areaArray = await Area.find(criteria).lean().limit(limit).skip(skip);
+            res.status(200).json({ data: areaArray });
+        } catch (error) {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+}
+
+module.exports = { getArea };
