@@ -24,7 +24,7 @@ const areaSchema = new mongoose.Schema({
     },
     pincode: {
         type: String,
-        required: [false, 'Zip code is required'],
+        required: [false, 'pincode is required'],
         trim: true
     },
     isDeleted: {
