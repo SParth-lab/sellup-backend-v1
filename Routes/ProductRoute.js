@@ -6,7 +6,7 @@ const router = Router();
 
 
 router.post("/add", verifyToken, createProduct.validator, createProduct.controller);
-router.get("/get-user-products", verifyToken, getProducts.validator, getProducts.controller);
+router.get("/get-user-products", getProducts.validator, getProducts.controller);
 router.put("/edit", verifyToken, editProduct.validator, editProduct.controller);
 router.delete("/delete", verifyToken, deleteProduct.validator, deleteProduct.controller);
 

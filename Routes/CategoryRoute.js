@@ -6,6 +6,7 @@ const router = Router();
 
 router.post("/create", createCategory.validator, createCategory.controller);
 
-router.get("/get", VerifyToken, getCategories.controller);
+// VerifyToken
+router.get("/get", getCategories.controller);
 
 module.exports = router;

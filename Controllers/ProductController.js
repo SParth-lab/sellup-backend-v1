@@ -82,7 +82,7 @@ const getProducts = {
         let { category, subCategory, location, area, search, minPrice, maxPrice, userId, productId, limit = 20, skip = 0, categoryId } = req.query;
         limit = parseInt(limit);
         skip = parseInt(skip);
-        const { _id } = req.user;
+        // const { _id } = req.user;
         const criteria = {
             isDelete: false,
         };
