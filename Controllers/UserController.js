@@ -4,8 +4,8 @@ const generateToken = require("../Helper/generateToken.js");
 
 const createUser = {
     validator: async (req, res, next) => {
-        const { name, lastName, email, phoneNumber } = req.body;
-        if (!name || !lastName || !email || !phoneNumber) {
+        const { name, lastName, email, password } = req.body;
+        if (!name || !lastName || !email || !password) {
             return res.status(400).send({error: "Please Fill all the Fields"});
         }
         next();
@@ -13,6 +13,14 @@ const createUser = {
     controller: async (req, res) => {
         try {
             const { name, lastName, email, phoneNumber, address, area, city, state, country, zipCode, password } = req.body;
+            const fullAddress = {
+                address: address || "",
+                area: area || "",
+                city: city || "",
+                state: state || "",
+                country: country || "",
+                zipCode: zipCode || ""
+            }
             let criteria = {}
             if (email) {
                 criteria.email = email;
@@ -21,37 +29,28 @@ const createUser = {
                 criteria.phoneNumber = phoneNumber;
             }
             const user = await User.findOne(criteria).select({ email: 1, phoneNumber: 1, isDeleted: 1, isActive: 1 }).lean();
-            if (user?.email === email || user?.phoneNumber === phoneNumber) {
-                return res.status(400).send({error: "User Already Exists"});
+            if (email && user?.email === email) {
+                return res.status(400).send({error: "Email Address Already Exists"});
             }
-            let payload = {
+            if (phoneNumber && user?.phoneNumber === phoneNumber) {
+                return res.status(400).send({error: "Phone Number Already Exists"});
+            }
+            // Encrypt the password before saving
+            const passwordHashResult = await User.generatePasswordHash(password);
+            const { hash } = passwordHashResult || {};
+            const payload = {
                 name,
                 lastName,
                 email,
-                phoneNumber
-            }
-            if (address || area || city || state || country || zipCode) {
-                const fullAddress = {
-                    address,
-                    area,
-                    city,
-                    state,
-                    country,
-                    zipCode
-                }
-                payload.fullAddress = fullAddress;
-                payload.address = address || '';
-                payload.area = area || '';
-                payload.city = city || '';
-                payload.state = state || '';
-                payload.country = country || '';
-                payload.zipCode = zipCode || '';
-            }
-            if (payload?.password) {
-                // Encrypt the password before saving
-                const passwordHashResult = await User.generatePasswordHash(password);
-                const { hash } = passwordHashResult || {};
-                payload.password = hash;
+                phoneNumber,
+                address: address || "",
+                area: area || "",
+                city: city || "",
+                state: state || "",
+                country: country || "",
+                zipCode: zipCode || "",
+                password: hash,
+                fullAddress: fullAddress || {}
             }
 
             // Create a new user instance

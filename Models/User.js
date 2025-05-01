@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     },
     phoneNumber: { 
         type: String, 
-        required: [true, 'Phone number is required'], 
+        required: [false, 'Phone number is required'], 
         unique: true, 
         trim: true,
         match: [/^\d{10}$/, 'Please fill a valid phone number'] 
@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema({
     },
     password: { 
         type: String, 
-        required: [false, 'Password is required'] 
+        required: [true, 'Password is required'] 
     },
     avatar: { 
         type: String, 
