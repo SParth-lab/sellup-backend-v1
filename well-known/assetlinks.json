@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.rent.el.in",
+            "sha256_cert_fingerprints": [
+                "CF:11:D8:B7:04:ED:6C:26:2B:C2:6D:FA:95:8E:E8:F2:99:A1:2C:8B:16:4D:47:36:CD:3B:96:D2:77:B7"
+            ]
+        }
+    }
+]
