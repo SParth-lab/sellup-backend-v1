@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const UserRoute = require("./Routes/UserRoute.js")
 const ProductRoute = require("./Routes/ProductRoute.js")
 const ReviewRoute = require("./Routes/ReviewRoute.js")
@@ -11,6 +12,9 @@ require("./config/db.config.js")
 const app = express()
 app.use(cors())
 app.use(express.json());
+
+// Serve assetlinks.json from .well-known directory
+app.use('/.well-known', express.static(path.join(__dirname, 'well-known')));
 
 
 app.use("/users", UserRoute);
