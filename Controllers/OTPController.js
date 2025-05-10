@@ -1,7 +1,6 @@
 const { generateOTP } = require("../Helper/Email.js");
 const client = require("../Helper/Redis.js");
 const { sendOtpViaWhatsapp } = require("../Helper/SendOTP.js");
-const OTP = require("../Models/OTP.js");
 const User = require("../Models/User.js");
 
 // API to send OTP
