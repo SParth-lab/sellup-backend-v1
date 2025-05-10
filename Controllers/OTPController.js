@@ -16,6 +16,7 @@ const viaWhatsapp = {
 
         const user = await User.findOne({ phoneNumber, isDeleted: false, isActive: true }).lean();
         if (!user) return res.status(400).json({ message: "User not found or not active , please check your phone number" });
+        if (user.isPhoneVerified) return res.status(400).json({ message: "Phone number already verified" });
 
         const otp = generateOTP();
         await client.del(phoneNumber);
