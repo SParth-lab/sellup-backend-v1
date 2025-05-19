@@ -86,7 +86,110 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  
+  rentType: { 
+    type: String, 
+    required: [true, 'Rent type is required'], 
+    trim: true 
+  },
+  discount: { 
+    type: Number, 
+    required: [true, 'Discount is required'] 
+  },
+  size: { 
+    type: String, 
+    trim: true 
+  },
+  fitType: { 
+    type: String, 
+    trim: true 
+  },
+  clothColor: { 
+    type: String, 
+    trim: true 
+  },
+  material: { 
+    type: String, 
+    trim: true 
+  },
+  sleeveLength: { 
+    type: String, 
+    trim: true 
+  },
+  neckStyle: { 
+    type: String, 
+    trim: true 
+  },
+  patternPrint: { 
+    type: String, 
+    trim: true 
+  },
+  customAddress: { 
+    type: Boolean, 
+    required: [true, 'Custom address is required'],
+    default: false
+  },
+  propertyType: { 
+    type: String, 
+    trim: true 
+  },
+  squareFootArea: { 
+    type: String, 
+    trim: true 
+  },
+  noOfBedrooms: { 
+    type: Number 
+  },
+  noOfBathrooms: { 
+    type: Number 
+  },
+  furnishingStatus: { 
+    type: String, 
+    trim: true 
+  },
+  ownershipType: { 
+    type: String, 
+    trim: true 
+  },
+  amenities: { 
+    type: [{ type: String }], 
+    trim: true 
+  },
+  propertyCondition: { 
+    type: String, 
+    trim: true 
+  },
+  bodyType: { 
+    type: String, 
+    trim: true 
+  },
+  carModel: { 
+    type: String, 
+    trim: true 
+  },
+  carYear: { 
+    type: String, 
+    trim: true 
+  },
+  transmission: { 
+    type: String, 
+    trim: true 
+  },
+  fuelType: { 
+    type: String, 
+    trim: true 
+  },
+  mileage: { 
+    type: String, 
+    trim: true 
+  },
+  carColor: { 
+    type: String, 
+    trim: true 
+  },
+  driveTrain: { 
+    type: String, 
+    trim: true 
+  }
 }, { 
   timestamps: true,
   versionKey: false // Disable the __v field

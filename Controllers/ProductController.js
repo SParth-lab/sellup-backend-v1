@@ -5,14 +5,50 @@ const CategoryModel = require("../Models/Category.js");
 
 const createProduct = {
     validator: async (req, res, next) => {
-        const { title, description, price, category, location, images, compressedImages, categoryId } = req.body;
-        if (!title || !description || !price || !category || !location || !images || !compressedImages || !categoryId) {
+        const { title, description, price, category, location, images, compressedImages, categoryId, customAddress, rentType, discount } = req.body;
+        if (!title || !description || !price || !category || !location || !images || !compressedImages || !categoryId || !customAddress || !rentType || !discount ) {
             return res.status(400).send({ error: "Please Fill all the fields" });
         }
         next();
     },
     controller: async (req, res) => {
-        const { title, description, price, category, subCategory, location, images, compressedImages, categoryId } = req.body;
+        const { 
+            title, 
+            description, 
+            price, 
+            category, 
+            subCategory, 
+            location, 
+            images, 
+            compressedImages, 
+            categoryId, 
+            rentType, 
+            discount, 
+            size, 
+            fitType, 
+            clothColor, 
+            material, 
+            sleeveLength, 
+            neckStyle, 
+            patternPrint, 
+            customAddress, 
+            propertyType, 
+            squareFootArea, 
+            noOfBedrooms, 
+            noOfBathrooms, 
+            furnishingStatus, 
+            ownershipType, 
+            amenities, 
+            propertyCondition, 
+            bodyType, 
+            carModel, 
+            carYear, 
+            transmission, 
+            fuelType, 
+            mileage, 
+            carColor, 
+            driveTrain 
+        } = req.body;
         const { _id: userId } = req.user;
         if (images.length > 5) {
             return res.status(400).send({ error: "Maximum 5 images allowed" });
@@ -64,6 +100,32 @@ const createProduct = {
             compressedImages,
             categoryId: _category._id,
             userId: userId, // User ID from the JWT payload
+            rentType,
+            discount,
+            size,
+            fitType,
+            clothColor,
+            material,
+            sleeveLength,
+            neckStyle,
+            patternPrint,
+            customAddress,
+            propertyType,
+            squareFootArea,
+            noOfBedrooms,
+            noOfBathrooms,
+            furnishingStatus,
+            ownershipType,
+            amenities,
+            propertyCondition,
+            bodyType,
+            carModel,
+            carYear,
+            transmission,
+            fuelType,
+            mileage,
+            carColor,
+            driveTrain
         });
         await product.save();
         await updateProductLimit(userId, true, res);
@@ -79,7 +141,7 @@ const getProducts = {
     },
     controller: async (req, res) => {
 
-        let { category, subCategory, location, area, search, minPrice, maxPrice, userId, productId, limit = 20, skip = 0, categoryId } = req.query;
+        let { category, subCategory, location, area, search, minPrice, maxPrice, userId, productId, limit = 20, skip = 0, categoryId, rentType, discount, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain } = req.query;
         limit = parseInt(limit);
         skip = parseInt(skip);
         // const { _id } = req.user;
@@ -96,6 +158,32 @@ const getProducts = {
         if (maxPrice !== undefined) criteria.price = { ...criteria.price, $lte: parseFloat(maxPrice) };
         if (userId) criteria.userId = userId;
         if (productId) criteria._id = productId;
+        if (rentType) criteria.rentType = rentType;
+        if (discount !== undefined) criteria.discount = { $gte: parseFloat(discount) };
+        if (size) criteria.size = size;
+        if (fitType) criteria.fitType = fitType;
+        if (clothColor) criteria.clothColor = clothColor;
+        if (material) criteria.material = material;
+        if (sleeveLength) criteria.sleeveLength = sleeveLength;
+        if (neckStyle) criteria.neckStyle = neckStyle;
+        if (patternPrint) criteria.patternPrint = patternPrint;
+        if (customAddress !== undefined) criteria.customAddress = customAddress;
+        if (propertyType) criteria.propertyType = propertyType;
+        if (squareFootArea) criteria.squareFootArea = squareFootArea;
+        if (noOfBedrooms !== undefined) criteria.noOfBedrooms = noOfBedrooms;
+        if (noOfBathrooms !== undefined) criteria.noOfBathrooms = noOfBathrooms;
+        if (furnishingStatus) criteria.furnishingStatus = furnishingStatus;
+        if (ownershipType) criteria.ownershipType = ownershipType;
+        if (amenities) criteria.amenities = amenities;
+        if (propertyCondition) criteria.propertyCondition = propertyCondition;
+        if (bodyType) criteria.bodyType = bodyType;
+        if (carModel) criteria.carModel = carModel;
+        if (carYear) criteria.carYear = carYear;
+        if (transmission) criteria.transmission = transmission;
+        if (fuelType) criteria.fuelType = fuelType;
+        if (mileage) criteria.mileage = mileage;
+        if (carColor) criteria.carColor = carColor;
+        if (driveTrain) criteria.driveTrain = driveTrain;
         // if (categoryId) criteria.categoryId = categoryId;
 
         // Fetch products with pagination and sorting by price
@@ -124,7 +212,7 @@ const editProduct = {
     },
     controller: async (req, res) => {
         const {productId} = req.query;
-        const {title, description, price, location, images, compressedImages} = req.body;
+        const {title, description, price, location, images, compressedImages, rentType, discount, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain} = req.body;
         try {
             let editedProduct = {};
             if (title) editedProduct.title = title;
@@ -133,6 +221,32 @@ const editProduct = {
             if (location) editedProduct.location = location;
             if (images) editedProduct.images = images;
             if (compressedImages) editedProduct.compressedImages = compressedImages;
+            if (rentType) editedProduct.rentType = rentType;
+            if (discount !== undefined) editedProduct.discount = discount;
+            if (size) editedProduct.size = size;
+            if (fitType) editedProduct.fitType = fitType;
+            if (clothColor) editedProduct.clothColor = clothColor;
+            if (material) editedProduct.material = material;
+            if (sleeveLength) editedProduct.sleeveLength = sleeveLength;
+            if (neckStyle) editedProduct.neckStyle = neckStyle;
+            if (patternPrint) editedProduct.patternPrint = patternPrint;
+            if (customAddress !== undefined) editedProduct.customAddress = customAddress;
+            if (propertyType) editedProduct.propertyType = propertyType;
+            if (squareFootArea) editedProduct.squareFootArea = squareFootArea;
+            if (noOfBedrooms !== undefined) editedProduct.noOfBedrooms = noOfBedrooms;
+            if (noOfBathrooms !== undefined) editedProduct.noOfBathrooms = noOfBathrooms;
+            if (furnishingStatus) editedProduct.furnishingStatus = furnishingStatus;
+            if (ownershipType) editedProduct.ownershipType = ownershipType;
+            if (amenities) editedProduct.amenities = amenities;
+            if (propertyCondition) editedProduct.propertyCondition = propertyCondition;
+            if (bodyType) editedProduct.bodyType = bodyType;
+            if (carModel) editedProduct.carModel = carModel;
+            if (carYear) editedProduct.carYear = carYear;
+            if (transmission) editedProduct.transmission = transmission;
+            if (fuelType) editedProduct.fuelType = fuelType;
+            if (mileage) editedProduct.mileage = mileage;
+            if (carColor) editedProduct.carColor = carColor;
+            if (driveTrain) editedProduct.driveTrain = driveTrain;
 
             const product = await Product.findByIdAndUpdate(productId, editedProduct, { new: true });
             if (!product) {
