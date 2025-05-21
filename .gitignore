@@ -12,3 +12,4 @@ node_modules1
 .vscode
 .terraform
 .DS_Store
+firebase/serviceAccountKey.json

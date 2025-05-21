@@ -8,6 +8,7 @@ const CategoryRoute = require("./Routes/CategoryRoute.js")
 const EmailRoute = require("./Routes/EmailRoute.js")
 const AreaRoute = require("./Routes/AreaRoute.js")
 const OTPRoute = require("./Routes/OTPRoute.js")
+const NotificationRoute = require("./Routes/NotificationRoute.js")
 require("./config/db.config.js")
 
 const app = express()
@@ -25,6 +26,7 @@ app.use("/categories", CategoryRoute);
 app.use("/email", EmailRoute);
 app.use("/area", AreaRoute);
 app.use("/via-whatsapp", OTPRoute);
+app.use("/notifications", NotificationRoute);
 
 
 app.get("/", (req, res) => {
