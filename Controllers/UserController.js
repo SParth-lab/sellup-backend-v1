@@ -232,4 +232,29 @@ const forgotPassword = {
     }
 }
 
-module.exports = { createUser, login, changePassword, editUser, forgotPassword };
+
+const setUserPreference = {
+    validator: async (req, res, next) => {
+        const { isChatEnabled, isCallEnabled } = req.body;
+        if (isChatEnabled === undefined && isCallEnabled === undefined) {
+            return res.status(400).send({ error: "Please enter isChatEnabled or isCallEnabled" });
+        }
+        next();
+    },
+    controller: async (req, res) => {
+        try {
+            const { _id: userId } = req.user;
+            const { isChatEnabled, isCallEnabled } = req.body;
+            const updateFields = {
+                isChatEnabled,
+                isCallEnabled
+            }
+            const updatedUser = await User.findByIdAndUpdate(userId, updateFields, { new: true });
+            return res.status(200).send({ message: "User preference set successfully", user: updatedUser });
+        } catch (error) {
+            console.log("🚀 ~ setUserPreference --- controller: ~ error:", error)
+            return res.status(400).send({ error: error.message || "Internal server error" });
+        }
+    }
+}
+module.exports = { createUser, login, changePassword, editUser, forgotPassword, setUserPreference };
