@@ -5,8 +5,8 @@ const CategoryModel = require("../Models/Category.js");
 
 const createProduct = {
     validator: async (req, res, next) => {
-        const { title, description, price, category, location, images, compressedImages, categoryId, customAddress, rentType, discount } = req.body;
-        if (!title || !description || !price || !category || !location || !images || !compressedImages || !categoryId || !customAddress || !rentType || !discount ) {
+        const { title, description, price, category, location, images, compressedImages, categoryId, rentType, discount } = req.body;
+        if (!title || !description || !price || !category || !location || !images || !compressedImages || !categoryId || !rentType || !discount ) {
             return res.status(400).send({ error: "Please Fill all the fields" });
         }
         next();
@@ -31,7 +31,7 @@ const createProduct = {
             sleeveLength, 
             neckStyle, 
             patternPrint, 
-            customAddress, 
+            customAddress = false, 
             propertyType, 
             squareFootArea, 
             noOfBedrooms, 
@@ -47,7 +47,7 @@ const createProduct = {
             fuelType, 
             mileage, 
             carColor, 
-            driveTrain 
+            driveTrain
         } = req.body;
         const { _id: userId } = req.user;
         if (images.length > 5) {
@@ -129,7 +129,7 @@ const createProduct = {
         });
         await product.save();
         await updateProductLimit(userId, true, res);
-        await product.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, profileImage: 1, fullAddress: 1, productCount: 1, productLimit: 1 });
+        await product.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, profileImage: 1, fullAddress: 1, productCount: 1, productLimit: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1 });
         return res.status(200).send({ message: "Product Created Successfully", product });
     }
 
@@ -189,7 +189,7 @@ const getProducts = {
         // Fetch products with pagination and sorting by price
         const products = await Product.find(criteria)
             .sort({ price: 1 })
-            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1 }).lean().limit(limit).skip(skip);
+            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1 }).lean().limit(limit).skip(skip);
         if (productId) {
             const reviews = await Review.find({productId: productId, isDelete: false})
                 .populate('userId', { name: 1, lastName: 1,avatar: 1 })
@@ -212,7 +212,7 @@ const editProduct = {
     },
     controller: async (req, res) => {
         const {productId} = req.query;
-        const {title, description, price, location, images, compressedImages, rentType, discount, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain} = req.body;
+        const {title, description, price, location, images, compressedImages, rentType, discount, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain} = req.body;
         try {
             let editedProduct = {};
             if (title) editedProduct.title = title;

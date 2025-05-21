@@ -61,6 +61,16 @@ const userSchema = new mongoose.Schema({
         required: [false, 'Zip code is required'], 
         trim: true 
     },
+    latitude: { 
+        type: Number, 
+        required: [false, 'Latitude is required'], 
+        trim: true 
+    },
+    longitude: { 
+        type: Number, 
+        required: [false, 'Longitude is required'], 
+        trim: true 
+    },
     password: { 
         type: String, 
         required: [true, 'Password is required'] 
@@ -97,6 +107,14 @@ const userSchema = new mongoose.Schema({
     isEmailVerified: {
         type: Boolean,
         default: false
+    },
+    isChatEnabled: {
+        type: Boolean,
+        default: true
+    },
+    isCallEnabled: {
+        type: Boolean,
+        default: true
     }
 }, { 
     timestamps: true 
