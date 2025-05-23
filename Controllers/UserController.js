@@ -12,7 +12,7 @@ const createUser = {
     },
     controller: async (req, res) => {
         try {
-            const { name, lastName, email, phoneNumber, address, area, city, state, country, zipCode, password } = req.body;
+            const { name, lastName, email, phoneNumber, address, area, city, state, country, zipCode, password, longitude, latitude } = req.body;
             const fullAddress = {
                 address: address || "",
                 area: area || "",
@@ -50,7 +50,9 @@ const createUser = {
                 country: country || "",
                 zipCode: zipCode || "",
                 password: hash,
-                fullAddress: fullAddress || {}
+                fullAddress: fullAddress || {},
+                longitude: longitude || 0,
+                latitude: latitude || 0
             }
 
             // Create a new user instance
