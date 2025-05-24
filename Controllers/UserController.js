@@ -209,16 +209,29 @@ const editUser = {
 
 const forgotPassword = {
     validator: async (req, res, next) => {
-        const { email, newPassword } = req.body;
-        if (!email || !newPassword) {
-            return res.status(400).send({error: "Please enter email and new password"});
+        const { email, phoneNumber, newPassword } = req.body;
+        if (!email && !phoneNumber) {
+            return res.status(400).send({error: "Please enter email or phoneNumber"});
+        }
+        if (!newPassword) {
+            return res.status(400).send({error: "Please enter new password"});
         }
         next();
     },
     controller: async (req, res) => {
 
-        const { email, newPassword } = req.body;
-        const user = await User.findOne({email, isDeleted: false, isActive: true}).select({isDeleted: 1, isActive: 1}).lean();
+        const { email, phoneNumber, newPassword } = req.body;
+        let criteria = {
+            isDeleted: false,
+            isActive: true
+        }
+        if (email) {
+            criteria.email = email;
+        }
+        if (phoneNumber) {
+            criteria.phoneNumber = phoneNumber;
+        }
+        const user = await User.findOne(criteria).select({isDeleted: 1, isActive: 1}).lean();
         if (!user) {
             return res.status(400).send({error: "User not found"});
         }
