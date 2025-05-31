@@ -1,4 +1,4 @@
-const { createEmailAndSend, changePasswordTemplate, generateOTP, resetPasswordTemplate } = require("../Helper/Email.js");
+const { createEmailAndSend, changePasswordTemplate, generateOTP, resetPasswordTemplate, verifyEmailTemplate } = require("../Helper/Email.js");
 const client = require('../Helper/Redis.js');
 const User = require("../Models/User.js");
 
@@ -10,13 +10,19 @@ const sendEmail = {
         next();
     },
     controller: async (req, res) => {
-        const { email, isResetPassword=false } = req.body;
-        const user = await User.findOne({email, isDeleted: false, isActive: true}).lean();
-        if (!user) return res.status(400).json({ message: "User not found or not active , please check your email" });
+        const { email, isResetPassword=false, isForgotPassword=false } = req.body;
 
         const otp = generateOTP();
-        const emailTemplate = isResetPassword ? resetPasswordTemplate(user.name, user.lastName, otp) : changePasswordTemplate(user.name, user.lastName, otp);
-        const subject = isResetPassword ? "Reset Password OTP" : "Password Change Request";
+        const name = email.split("@")[0];
+        let emailTemplate = verifyEmailTemplate(name, otp)
+
+        if (isResetPassword || isForgotPassword) {
+            const user = await User.findOne({email, isDeleted: false, isActive: true}).lean();
+            if (!user) return res.status(400).json({ message: "User not found or not active , please check your email" });
+
+            emailTemplate = isResetPassword ? resetPasswordTemplate(user.name, user.lastName, otp) : changePasswordTemplate(user.name, user.lastName, otp);
+        }
+        const subject = isResetPassword ? "🚀 One Step Away – Reset Your Password" : isForgotPassword ? "📬 Forgot Password Request Received – Let’s Get You Back In" : "🎉 Almost There! Confirm Your Email to Join Rentel";
         try {
             await client.del(email);
             await createEmailAndSend(email, subject, emailTemplate, otp);

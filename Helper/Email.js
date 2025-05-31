@@ -211,10 +211,92 @@ const resetPasswordTemplate = (name, lastName, otp) => {
     `
 }
 
+const verifyEmailTemplate = (name, otp) => {
+    return `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .header img {
+            width: 150px !important;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content h2 {
+            color: #333333;
+        }
+        .content p {
+            color: #666666;
+        }
+        .otp-box {
+            font-size: 24px;
+            font-weight: bold;
+            background: #f3f3f3;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 20px 0;
+            letter-spacing: 2px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #aaaaaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://firebasestorage.googleapis.com/v0/b/sellup-84bb6.firebasestorage.app/o/Group%2026680.png?alt=media&token=f11ce06a-59c4-402b-9a39-0b3259fa6fcf" alt="Rentel Sell Something New">
+        </div>
+        <div class="content">
+            <h2>Verify Your Email Address</h2>
+            <p>Hello ${name},</p>
+            <p>Thank you for registering with Rentel. To complete your sign-up, please verify your email address using the OTP below:</p>
+            <div class="otp-box">${otp}</div>
+            <p>This OTP is valid for <strong>10 minutes</strong>. If you did not create this account, you can safely ignore this email.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Rentel Sell Something New. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+
+    `
+}
+
 
 module.exports = {
     createEmailAndSend,
     generateOTP,
     changePasswordTemplate,
-    resetPasswordTemplate
+    resetPasswordTemplate,
+    verifyEmailTemplate
 }

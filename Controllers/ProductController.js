@@ -152,8 +152,17 @@ const getProducts = {
         if (category) criteria.category = category?.toLowerCase();
         if (subCategory) criteria.subCategory = subCategory?.toLowerCase();
         if (search) criteria.title = { $regex: search, $options: 'i' };
-        if (location) criteria['location.city'] = { $regex: location, $options: 'i' };
         if (area) criteria['location.area'] = { $regex: area, $options: 'i' };
+        if (location) {
+            criteria['$or'] = [];
+            criteria['$or'].push({ 'location.city': { $regex: location, $options: 'i' } });
+            criteria['$or'].push({ 'location.area': { $regex: location, $options: 'i' } });
+            criteria['$or'].push({ 'location.address': { $regex: location, $options: 'i' } });
+            criteria['$or'].push({ 'location.state': { $regex: location, $options: 'i' } });
+            criteria['$or'].push({ 'location.country': { $regex: location, $options: 'i' } });
+            criteria['$or'].push({ 'location.zipCode': { $regex: location, $options: 'i' } });
+        }
+        
         if (minPrice !== undefined) criteria.price = { ...criteria.price, $gte: parseFloat(minPrice) };
         if (maxPrice !== undefined) criteria.price = { ...criteria.price, $lte: parseFloat(maxPrice) };
         if (userId) criteria.userId = userId;
