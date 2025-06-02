@@ -208,8 +208,10 @@ const getProducts = {
             const reviews = await Review.find({productId: productId, isDelete: false})
                 .populate('userId', { name: 1, lastName: 1,avatar: 1 })
                 .lean();
-            const product = products.find(product => product._id + "" === productId);
-            product.reviews = reviews || [];
+            if (reviews &&reviews?.length > 0) {
+                const product = products.find(product => product._id + "" === productId);
+                product.reviews = reviews || [];
+            }
             return res.status(200).send({ message: "Product Fetched Successfully", product });
         }
         return res.status(200).send({ message: "Products Fetched Successfully", products });
