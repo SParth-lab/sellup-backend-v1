@@ -205,11 +205,11 @@ const getProducts = {
             .sort({ price: 1 })
             .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1 }).lean().limit(limit).skip(skip);
         if (productId) {
+            const product = products.find(product => product._id + "" === productId);
             const reviews = await Review.find({productId: productId, isDelete: false})
                 .populate('userId', { name: 1, lastName: 1,avatar: 1 })
                 .lean();
             if (reviews &&reviews?.length > 0) {
-                const product = products.find(product => product._id + "" === productId);
                 product.reviews = reviews || [];
             }
             return res.status(200).send({ message: "Product Fetched Successfully", product });
