@@ -212,7 +212,7 @@ const getProducts = {
             if (reviews &&reviews?.length > 0) {
                 product.reviews = reviews || [];
             }
-            return res.status(200).send({ message: "Product Fetched Successfully", product });
+            return res.status(200).send({ message: "Product Fetched Successfully", product: product || {} });
         }
         return res.status(200).send({ message: "Products Fetched Successfully", products });
     }
