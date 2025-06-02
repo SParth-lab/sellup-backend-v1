@@ -1,6 +1,6 @@
 const admin = require("../firebase/firebase");
 
-const sendToTopic = async () => {
+const sendToTopic = async ({productId, userId}) => {
     const message = {
         notification: {
             title: "🎉 New Item for Rent! Hello Testing",
@@ -8,8 +8,8 @@ const sendToTopic = async () => {
         },
         data: {
             click_action: "FLUTTER_NOTIFICATION_CLICK",
-            productId: "682df6632e20e6beb64e30ac",
-            userId: "676728aac3ef60d554d5ee73"
+            productId: productId,
+            userId: userId
         },
         topic: "allUsers", // must match Flutter topic
     };
