@@ -3,7 +3,7 @@ const admin = require("../firebase/firebase");
 const sendToTopic = async ({productId, userId}) => {
     const message = {
         notification: {
-            title: "🎉 New Item for Rent! Hello Testing",
+            title: "🎉 New Item for Rent!",
             body: "Check out the latest additions on Rentel now!",
         },
         data: {

@@ -133,7 +133,7 @@ const createProduct = {
         await product.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, profileImage: 1, fullAddress: 1, productCount: 1, productLimit: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1 });
         if (product) {
             // send notification to all users
-            await sendToTopic({productId: product._id, userId: userId});
+            await sendToTopic({productId: product._id+"", userId: userId+""});
         }
         return res.status(200).send({ message: "Product Created Successfully", product });
     }
