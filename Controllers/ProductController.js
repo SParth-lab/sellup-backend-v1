@@ -3,6 +3,7 @@ const { updateProductLimit } = require("../Helper/product.js");
 const Review = require("../Models/Review.js");
 const CategoryModel = require("../Models/Category.js");
 const sendToTopic = require("../MobileAppNotification/sendNotification.js");
+const User = require("../Models/User.js");
 
 const createProduct = {
     validator: async (req, res, next) => {
@@ -89,6 +90,16 @@ const createProduct = {
         //         return res.status(400).send({ error: "Category not found" });
         //     }
         // }
+
+        // check here user product limit
+        const user = await User.findOne({_id: userId}).select({productLimit:1, productCount:1}).lean();
+        if (!user) {
+            return res.status(400).send({ error: "User not found" });
+        }
+        if (user.productCount >= user.productLimit) {
+            return res.status(400).send({ error: "You have reached your product limit" });
+        }
+
         // Create a new product
         const product = await Product.create({
             title,

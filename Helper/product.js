@@ -9,7 +9,7 @@ const updateProductLimit = async (userId, isAddProduct, res) => {
     }
       if (isAddProduct) {
           if (user.productCount >= user.productLimit) {
-              return res.status(400).send({error: "You have reached the product limit"});
+              return res.status(400).send({error: "You have reached your product limit"});
           }
           await User.updateOne({_id: userId}, {$inc: {productCount: 1}});
       }else if (user.productCount > 0) {
