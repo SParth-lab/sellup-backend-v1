@@ -7,8 +7,8 @@ const User = require("../Models/User.js");
 
 const createProduct = {
     validator: async (req, res, next) => {
-        const { title, description, price, category, location, images, compressedImages, categoryId, rentType, discount } = req.body;
-        if (!title || !description || !price || !category || !location || !images || !compressedImages || !categoryId || !rentType || !discount ) {
+        const { title, description, price, category, location, images, compressedImages, categoryId, rentType } = req.body;
+        if (!title || !description || !price || !category || !location || !images || !compressedImages || !categoryId || !rentType ) {
             return res.status(400).send({ error: "Please Fill all the fields" });
         }
         next();
@@ -113,7 +113,7 @@ const createProduct = {
             categoryId: _category._id,
             userId: userId, // User ID from the JWT payload
             rentType,
-            discount,
+            discount: discount ?? 0,
             size,
             fitType,
             clothColor,
