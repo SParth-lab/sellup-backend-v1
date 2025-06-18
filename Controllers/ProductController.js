@@ -179,8 +179,10 @@ const getProducts = {
             criteria['$or'].push({ 'location.zipCode': { $regex: location, $options: 'i' } });
         }
         
-        if (minPrice !== undefined) criteria.price = { ...criteria.price, $gte: parseFloat(minPrice) };
-        if (maxPrice !== undefined) criteria.price = { ...criteria.price, $lte: parseFloat(maxPrice) };
+
+        if (minPrice !== undefined && maxPrice !== undefined) {
+            criteria.price = { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) };
+        }
         if (userId) criteria.userId = userId;
         if (productId) criteria._id = productId;
         if (rentType) criteria.rentType = rentType;
@@ -209,7 +211,7 @@ const getProducts = {
         if (mileage) criteria.mileage = mileage;
         if (carColor) criteria.carColor = carColor;
         if (driveTrain) criteria.driveTrain = driveTrain;
-        // if (categoryId) criteria.categoryId = categoryId;
+        if (categoryId) criteria.categoryId = categoryId;
 
         // Fetch products with pagination and sorting by price
         const products = await Product.find(criteria)
