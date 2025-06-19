@@ -49,7 +49,9 @@ const createProduct = {
             fuelType, 
             mileage, 
             carColor, 
-            driveTrain
+            driveTrain,
+            vendorName,
+            vendorPhone
         } = req.body;
         const { _id: userId } = req.user;
         if (images.length > 5) {
@@ -146,7 +148,9 @@ const createProduct = {
             fuelType,
             mileage,
             carColor,
-            driveTrain
+            driveTrain,
+            vendorName,
+            vendorPhone
         });
         await product.save();
         await updateProductLimit(userId, true, res);
@@ -250,7 +254,7 @@ const editProduct = {
     },
     controller: async (req, res) => {
         const {productId} = req.query;
-        const {title, description, price, location, images, compressedImages, rentType, discount=0, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain} = req.body;
+        const {title, description, price, location, images, compressedImages, rentType, discount=0, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain, vendorName, vendorPhone} = req.body;
         try {
             let editedProduct = {};
             if (title) editedProduct.title = title;
@@ -285,6 +289,8 @@ const editProduct = {
             if (mileage) editedProduct.mileage = mileage;
             if (carColor) editedProduct.carColor = carColor;
             if (driveTrain) editedProduct.driveTrain = driveTrain;
+            if (vendorName) editedProduct.vendorName = vendorName;
+            if (vendorPhone) editedProduct.vendorPhone = vendorPhone;
 
             // calculate discount price
             if (discount) {

@@ -194,6 +194,16 @@ const productSchema = new mongoose.Schema({
   driveTrain: { 
     type: String, 
     trim: true 
+  },
+  vendorName: { 
+    type: String, 
+    trim: true,
+    required: [false, 'Vendor name is optional']
+  },
+  vendorPhone: { 
+    type: String, 
+    trim: true ,
+    required: [false, 'Vendor phone is optional']
   }
 }, { 
   timestamps: true,
