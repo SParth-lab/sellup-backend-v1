@@ -99,6 +99,14 @@ const createProduct = {
         if (user.productCount >= user.productLimit) {
             return res.status(400).send({ error: "You have reached your product limit" });
         }
+        // calculate discount price
+        let discountPrice = 0;
+        if (discount) {
+            discountPrice = price - (price * discount / 100);
+            if (discountPrice < 0) {
+                discountPrice = 0;
+            }
+        }
 
         // Create a new product
         const product = await Product.create({
@@ -114,6 +122,7 @@ const createProduct = {
             userId: userId, // User ID from the JWT payload
             rentType,
             discount: discount ?? 0,
+            discountPrice: discountPrice ?? 0,
             size,
             fitType,
             clothColor,
@@ -181,7 +190,7 @@ const getProducts = {
         
 
         if (minPrice !== undefined && maxPrice !== undefined) {
-            criteria.price = { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) };
+            criteria.discountPrice = { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) };
         }
         if (userId) criteria.userId = userId;
         if (productId) criteria._id = productId;
@@ -241,7 +250,7 @@ const editProduct = {
     },
     controller: async (req, res) => {
         const {productId} = req.query;
-        const {title, description, price, location, images, compressedImages, rentType, discount, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain} = req.body;
+        const {title, description, price, location, images, compressedImages, rentType, discount=0, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain} = req.body;
         try {
             let editedProduct = {};
             if (title) editedProduct.title = title;
@@ -251,7 +260,7 @@ const editProduct = {
             if (images) editedProduct.images = images;
             if (compressedImages) editedProduct.compressedImages = compressedImages;
             if (rentType) editedProduct.rentType = rentType;
-            if (discount !== undefined) editedProduct.discount = discount;
+            if (discount !== undefined) editedProduct.discount = discount ?? 0;
             if (size) editedProduct.size = size;
             if (fitType) editedProduct.fitType = fitType;
             if (clothColor) editedProduct.clothColor = clothColor;
@@ -276,6 +285,14 @@ const editProduct = {
             if (mileage) editedProduct.mileage = mileage;
             if (carColor) editedProduct.carColor = carColor;
             if (driveTrain) editedProduct.driveTrain = driveTrain;
+
+            // calculate discount price
+            if (discount) {
+                editedProduct.discountPrice = price - (price * discount / 100);
+                if (editedProduct.discountPrice < 0) {
+                    editedProduct.discountPrice = 0;
+                }
+            }
 
             const product = await Product.findByIdAndUpdate(productId, editedProduct, { new: true });
             if (!product) {
