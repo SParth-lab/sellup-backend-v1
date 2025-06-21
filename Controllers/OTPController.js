@@ -53,7 +53,7 @@ const verifyOTP = {
         // if (user) {
             await client.del(phoneNumber);
             // const updatedUser = await User.updateOne({ phoneNumber }, { isPhoneVerified: true }).lean();
-            return res.status(200).json({ message: "OTP verified successfully", user: updatedUser });
+            return res.status(200).json({ message: "OTP verified successfully" });
         // }
         // return res.status(400).json({ message: "User not found or not active , please check your phone number" });
     }
