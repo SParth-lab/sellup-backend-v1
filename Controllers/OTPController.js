@@ -46,16 +46,16 @@ const verifyOTP = {
         if (!storedOTP) return res.status(400).json({ message: "OTP expired" });
         if (storedOTP !== otp) return res.status(400).json({ message: "Invalid OTP" });
 
-        const user = await User.findOne({ phoneNumber, isDeleted: false, isActive: true }).lean();
-        if (!user) return res.status(400).json({ message: "User not found or not active , please check your phone number" });
+        // const user = await User.findOne({ phoneNumber, isDeleted: false, isActive: true }).lean();
+        // if (!user) return res.status(400).json({ message: "User not found or not active , please check your phone number" });
         // if (user.isPhoneVerified) return res.status(400).json({ message: "Phone number already verified" });
 
-        if (user) {
+        // if (user) {
             await client.del(phoneNumber);
-            const updatedUser = await User.updateOne({ phoneNumber }, { isPhoneVerified: true }).lean();
+            // const updatedUser = await User.updateOne({ phoneNumber }, { isPhoneVerified: true }).lean();
             return res.status(200).json({ message: "OTP verified successfully", user: updatedUser });
-        }
-        return res.status(400).json({ message: "User not found or not active , please check your phone number" });
+        // }
+        // return res.status(400).json({ message: "User not found or not active , please check your phone number" });
     }
 }
 
