@@ -106,7 +106,7 @@ const createProduct = {
         if (discount) {
             discountPrice = price - (price * discount / 100);
             if (discountPrice < 0) {
-                discountPrice = 0;
+                discountPrice = price;
             }
         }
 
@@ -296,7 +296,7 @@ const editProduct = {
             if (discount) {
                 editedProduct.discountPrice = price - (price * discount / 100);
                 if (editedProduct.discountPrice < 0) {
-                    editedProduct.discountPrice = 0;
+                    editedProduct.discountPrice = price;
                 }
             }
 
