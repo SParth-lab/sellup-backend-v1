@@ -13,8 +13,8 @@ const viaWhatsapp = {
     controller: async (req, res) => {
         const { phoneNumber, isWhatsapp = false, isFrom = "login" } = req.body;
 
-        const user = await User.findOne({ phoneNumber, isDeleted: false, isActive: true }).lean();
-        if (!user) return res.status(400).json({ message: "User not found or not active , please check your phone number" });
+        // const user = await User.findOne({ phoneNumber, isDeleted: false, isActive: true }).lean();
+        // if (!user) return res.status(400).json({ message: "User not found or not active , please check your phone number" });
         // if (user.isPhoneVerified) return res.status(400).json({ message: "Phone number already verified" });
 
         const otp = generateOTP();
