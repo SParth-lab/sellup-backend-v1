@@ -1,0 +1,194 @@
+{
+  "info": {
+    "name": "Sellup Admin API",
+    "_postman_id": "7d7b7a75-3a8f-4a5f-bf3c-8c3d5b2f0c11",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "adminToken", "value": "" },
+    { "key": "userId", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{adminToken}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Admin Login",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"StrongPassword123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "login"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "try {",
+              "  const data = pm.response.json();",
+              "  const token = data && (data.token || data.accessToken);",
+              "  if (token) {",
+              "    pm.collectionVariables.set('adminToken', token);",
+              "    pm.test('Saved admin token to collection variables', function () { pm.expect(!!token).to.be.true; });",
+              "  }",
+              "} catch (e) { /* ignore */ }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get User By Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/admin/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["admin", "users", "{{userId}}"] }
+          }
+        },
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?page=1&limit=20&search=&isActive=true&isDeleted=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "search", "value": "" },
+                { "key": "isActive", "value": "true" },
+                { "key": "isDeleted", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Edit User",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New\",\n  \"lastName\": \"Name\",\n  \"email\": \"new@example.com\",\n  \"phoneNumber\": \"9876543210\",\n  \"address\": \"Street\",\n  \"area\": \"Area\",\n  \"city\": \"City\",\n  \"state\": \"State\",\n  \"country\": \"Country\",\n  \"zipCode\": \"380001\",\n  \"avatar\": \"https://...\",\n  \"latitude\": 23.02,\n  \"longitude\": 72.57,\n  \"isActive\": true,\n  \"isDeleted\": false,\n  \"productLimit\": 20,\n  \"isChatEnabled\": true,\n  \"isCallEnabled\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete User (soft by default)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}?hard=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}"],
+              "query": [ { "key": "hard", "value": "false" } ]
+            }
+          }
+        },
+        {
+          "name": "Get Users With Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users-with-products?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users-with-products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Counts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/counts",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "counts"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/products?page=1&limit=20&search=&isDelete=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "search", "value": "" },
+                { "key": "isDelete", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}/products?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}", "products"],
+              "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "20" } ]
+            }
+          }
+        },
+        {
+          "name": "Delete Product (soft by default)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/{{productId}}?hard=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "products", "{{productId}}"],
+              "query": [ { "key": "hard", "value": "false" } ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+

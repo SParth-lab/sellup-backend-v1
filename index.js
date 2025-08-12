@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const UserRoute = require("./Routes/UserRoute.js")
+const AdminRoute = require("./Routes/AdminRoute.js")
 const ProductRoute = require("./Routes/ProductRoute.js")
 const ReviewRoute = require("./Routes/ReviewRoute.js")
 const CategoryRoute = require("./Routes/CategoryRoute.js")
@@ -20,6 +21,7 @@ app.use('/.well-known', express.static(path.join(__dirname, 'well-known')));
 
 
 app.use("/users", UserRoute);
+app.use("/admin", AdminRoute);
 app.use("/products", ProductRoute);
 app.use("/reviews", ReviewRoute);
 app.use("/categories", CategoryRoute);
