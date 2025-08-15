@@ -15,7 +15,7 @@ router.get('/products', verifyAdminToken, listProducts.validator, listProducts.c
 router.get('/users/:userId/products', verifyAdminToken, listUserProducts.validator, listUserProducts.controller);
 router.delete('/products/:productId', verifyAdminToken, deleteProduct.validator, deleteProduct.controller);
 router.get('/users-with-products', verifyAdminToken, listUsersWithProducts.validator, listUsersWithProducts.controller);
-router.get('/users/counts', verifyAdminToken, getUserCounts.validator, getUserCounts.controller);
+router.get('/total-counts', verifyAdminToken, getUserCounts.validator, getUserCounts.controller);
 
 module.exports = router;
 
