@@ -24,7 +24,7 @@ const listUsers = {
       };
 
       // Default wall filters
-      const criteria = { isActive: true, isDeleted: false };
+      const criteria = { };
 
       // Allow overriding via query params only if explicitly provided
       const qIsActive = parseBoolean(req.query.isActive);
