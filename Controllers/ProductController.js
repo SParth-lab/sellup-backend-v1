@@ -154,7 +154,7 @@ const createProduct = {
         });
         await product.save();
         await updateProductLimit(userId, true, res);
-        await product.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, profileImage: 1, fullAddress: 1, productCount: 1, productLimit: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1 });
+        await product.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, profileImage: 1, fullAddress: 1, productCount: 1, productLimit: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1, isAdsEnable: 1 });
         if (product) {
             // send notification to all users
             await sendToTopic({productId: product._id+"", userId: userId+""});
@@ -229,7 +229,7 @@ const getProducts = {
         // Fetch products with pagination and sorting by price
         const products = await Product.find(criteria)
             .sort({ price: 1 })
-            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1 }).lean().limit(limit).skip(skip);
+            .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1, isAdsEnable: 1 }).lean().limit(limit).skip(skip);
         if (productId) {
             const product = products.find(product => product._id + "" === productId);
             const reviews = await Review.find({productId: productId, isDelete: false})

@@ -76,7 +76,7 @@ const editUser = {
         'name', 'lastName', 'email', 'phoneNumber',
         'address', 'area', 'city', 'state', 'country', 'zipCode',
         'avatar', 'latitude', 'longitude',
-        'isActive', 'isDeleted', 'productLimit', 'isChatEnabled', 'isCallEnabled'
+        'isActive', 'isDeleted', 'productLimit', 'isChatEnabled', 'isCallEnabled', 'isAdsEnable'
       ];
 
       const updateSet = {};

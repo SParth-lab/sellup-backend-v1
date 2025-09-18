@@ -115,6 +115,10 @@ const userSchema = new mongoose.Schema({
     isCallEnabled: {
         type: Boolean,
         default: true
+    },
+    isAdsEnable: {
+        type: Boolean,
+        default: true
     }
 }, { 
     timestamps: true 
