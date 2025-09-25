@@ -32,7 +32,8 @@ const addOrUpdateConfig = {
                 // Create new config
                 config = await Config.create({
                     googleAdsUnitId,
-                    isActive: true
+                    isActive: true,
+                    isAdEnable: isAdEnable ?? true
                 });
 
                 return res.status(201).send({ 
