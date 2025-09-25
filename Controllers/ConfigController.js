@@ -2,15 +2,15 @@ const Config = require("../Models/Config.js");
 
 const addOrUpdateConfig = {
     validator: async (req, res, next) => {
-        const { googleAdsUnitId } = req.body;
-        if (!googleAdsUnitId) {
-            return res.status(400).send({ error: "Google Ads Unit ID is required" });
+        const { googleAdsUnitId, isAdEnable } = req.body;
+        if (!googleAdsUnitId || isAdEnable === undefined) {
+            return res.status(400).send({ error: "Google Ads Unit ID and isAdEnable are required" });
         }
         next();
     },
     controller: async (req, res) => {
         try {
-            const { googleAdsUnitId } = req.body;
+            const { googleAdsUnitId, isAdEnable } = req.body;
             
             // Check if config already exists (we only want one config document)
             let config = await Config.findOne({ isDeleted: false });
@@ -19,6 +19,9 @@ const addOrUpdateConfig = {
                 // Update existing config
                 config.googleAdsUnitId = googleAdsUnitId;
                 config.isActive = true;
+                if (isAdEnable !== undefined) {
+                    config.isAdEnable = isAdEnable;
+                }
                 await config.save();
                 
                 return res.status(200).send({ 

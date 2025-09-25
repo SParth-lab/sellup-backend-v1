@@ -10,6 +10,10 @@ const configSchema = new mongoose.Schema({
     type: Boolean, 
     default: true 
   },
+  isAdEnable: { 
+    type: Boolean, 
+    default: true 
+  },
   isDeleted: { 
     type: Boolean, 
     default: false 
