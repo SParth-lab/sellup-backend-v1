@@ -1,4 +1,5 @@
 const Config = require("../Models/Config.js");
+const Category = require("../Models/Category.js");
 
 const addOrUpdateConfig = {
     validator: async (req, res, next) => {
@@ -139,4 +140,124 @@ const updateConfigStatus = {
     }
 };
 
-module.exports = { addOrUpdateConfig, removeConfig, getConfig, updateConfigStatus };
+const setCategoryOrder = {
+    validator: async (req, res, next) => {
+        const { categoryOrder } = req.body;
+        if (!categoryOrder || !Array.isArray(categoryOrder)) {
+            return res.status(400).send({ error: "categoryOrder array is required" });
+        }
+        
+        // Validate each category order object
+        for (let item of categoryOrder) {
+            if (!item.categoryId || typeof item.sortOrder !== 'number') {
+                return res.status(400).send({ error: "Each category order must have categoryId and sortOrder" });
+            }
+        }
+        next();
+    },
+    controller: async (req, res) => {
+        try {
+            const { categoryOrder } = req.body;
+            
+            // Verify all category IDs exist
+            const categoryIds = categoryOrder.map(item => item.categoryId);
+            const existingCategories = await Category.find({ _id: { $in: categoryIds }, isDelete: false });
+            
+            if (existingCategories.length !== categoryIds.length) {
+                return res.status(400).send({ error: "One or more category IDs are invalid" });
+            }
+            
+            // Get or create config
+            let config = await Config.findOne({ isDeleted: false });
+            
+            if (config) {
+                config.categoryOrder = categoryOrder;
+                await config.save();
+            } else {
+                config = await Config.create({ categoryOrder });
+            }
+            
+            return res.status(200).send({ 
+                message: "Category order set successfully", 
+                categoryOrder: config.categoryOrder 
+            });
+        } catch (error) {
+            console.error('Error setting category order:', error);
+            return res.status(500).send({ error: "Internal Server Error" });
+        }
+    }
+};
+
+const getCategoryOrder = {
+    validator: async (req, res, next) => {
+        next();
+    },
+    controller: async (req, res) => {
+        try {
+            const config = await Config.findOne({ 
+                isDeleted: false 
+            }).populate('categoryOrder.categoryId', 'name description colorCode image isOtherCategory').lean();
+            
+            const categoryOrder = config?.categoryOrder || [];
+            
+            return res.status(200).send({ 
+                message: "Category order fetched successfully", 
+                categoryOrder 
+            });
+        } catch (error) {
+            console.error('Error fetching category order:', error);
+            return res.status(500).send({ error: "Internal Server Error" });
+        }
+    }
+};
+
+const updateCategoryOrder = {
+    validator: async (req, res, next) => {
+        const { categoryId, sortOrder } = req.body;
+        if (!categoryId || typeof sortOrder !== 'number') {
+            return res.status(400).send({ error: "categoryId and sortOrder are required" });
+        }
+        next();
+    },
+    controller: async (req, res) => {
+        try {
+            const { categoryId, sortOrder } = req.body;
+            
+            // Verify category exists
+            const category = await Category.findOne({ _id: categoryId, isDelete: false });
+            if (!category) {
+                return res.status(404).send({ error: "Category not found" });
+            }
+            
+            // Get or create config
+            let config = await Config.findOne({ isDeleted: false });
+            
+            if (!config) {
+                config = await Config.create({ categoryOrder: [] });
+            }
+            
+            // Find existing category order or add new one
+            const existingIndex = config.categoryOrder.findIndex(
+                item => item.categoryId.toString() === categoryId
+            );
+            
+            if (existingIndex >= 0) {
+                config.categoryOrder[existingIndex].sortOrder = sortOrder;
+            } else {
+                config.categoryOrder.push({ categoryId, sortOrder });
+            }
+            
+            await config.save();
+            
+            return res.status(200).send({ 
+                message: "Category order updated successfully", 
+                categoryOrder: config.categoryOrder 
+            });
+        } catch (error) {
+            console.error('Error updating category order:', error);
+            return res.status(500).send({ error: "Internal Server Error" });
+        }
+    }
+};
+
+module.exports = { addOrUpdateConfig, removeConfig, getConfig, updateConfigStatus, setCategoryOrder, getCategoryOrder, updateCategoryOrder };

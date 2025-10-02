@@ -17,7 +17,18 @@ const configSchema = new mongoose.Schema({
   isDeleted: { 
     type: Boolean, 
     default: false 
-  }
+  },
+  categoryOrder: [{
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true
+    },
+    sortOrder: {
+      type: Number,
+      required: true
+    }
+  }]
 }, { 
   timestamps: true,
   versionKey: false // Disable the __v field

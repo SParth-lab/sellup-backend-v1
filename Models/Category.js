@@ -28,6 +28,10 @@ const categorySchema = new mongoose.Schema({
     isOtherCategory: {
         type: Boolean,
         default: false
+    },
+    sortOrder: {
+        type: Number,
+        default: 0
     }
 }, { 
   timestamps: true,
