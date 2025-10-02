@@ -4,15 +4,15 @@ const User = require("../Models/User.js");
 
 const addBanner = {
     validator: async (req, res, next) => {
-        const { mobileImage, webImage, userId, productId } = req.body;
-        if (!mobileImage || !webImage || !userId || !productId) {
+        const { mobileImage, webImage } = req.body;
+        if (!mobileImage || !webImage ) {
             return res.status(400).send({ error: "Please Fill all the fields (mobileImage, webImage, userId, productId)" });
         }
         next();
     },
     controller: async (req, res) => {
         try {
-            const { mobileImage, webImage, userId, productId } = req.body;
+            const { mobileImage, webImage, userId, productId, externalLink } = req.body;
             
             // Verify user exists
             const user = await User.findById(userId);
@@ -31,11 +31,16 @@ const addBanner = {
                 mobileImage,
                 webImage,
                 userId,
-                productId
+                productId,
+                externalLink
             });
 
-            await banner.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1 });
-            await banner.populate('productId', { title: 1, price: 1, discountPrice: 1, images: 1 });
+            if (userId) {
+                await banner.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1 });
+            }
+            if (productId) {
+                await banner.populate('productId', { title: 1, price: 1, discountPrice: 1, images: 1 });
+            }
 
             return res.status(201).send({ 
                 message: "Banner created successfully", 
@@ -59,7 +64,7 @@ const editBanner = {
     controller: async (req, res) => {
         try {
             const { bannerId } = req.params;
-            const { mobileImage, webImage, userId, productId, isActive } = req.body;
+            const { mobileImage, webImage, userId, productId, isActive, externalLink } = req.body;
 
             // Find the banner
             const banner = await Banner.findById(bannerId);
@@ -70,6 +75,7 @@ const editBanner = {
             // Update banner fields
             if (mobileImage) banner.mobileImage = mobileImage;
             if (webImage) banner.webImage = webImage;
+            if (externalLink) banner.externalLink = externalLink;
             if (userId) {
                 // Verify user exists
                 const user = await User.findById(userId);
@@ -89,8 +95,12 @@ const editBanner = {
             if (isActive !== undefined) banner.isActive = isActive;
 
             await banner.save();
-            await banner.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1 });
-            await banner.populate('productId', { title: 1, price: 1, discountPrice: 1, images: 1 });
+            if (userId) {
+                await banner.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1 });
+            }
+            if (productId) {
+                await banner.populate('productId', { title: 1, price: 1, discountPrice: 1, images: 1 });
+            }
 
             return res.status(200).send({ 
                 message: "Banner updated successfully", 

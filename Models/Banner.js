@@ -14,12 +14,17 @@ const bannerSchema = new mongoose.Schema({
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
-    required: [true, 'User ID is required'] 
+    required: [false, 'User ID is optional'] 
   },
   productId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Product', 
-    required: [true, 'Product ID is required'] 
+    required: [false, 'Product ID is required'] 
+  },
+  externalLink: { 
+    type: String, 
+    required: [false, 'External link is optional'], 
+    trim: true 
   },
   isActive: { 
     type: Boolean, 
