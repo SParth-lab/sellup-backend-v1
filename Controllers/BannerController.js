@@ -6,7 +6,7 @@ const addBanner = {
     validator: async (req, res, next) => {
         const { mobileImage, webImage } = req.body;
         if (!mobileImage || !webImage ) {
-            return res.status(400).send({ error: "Please Fill all the fields (mobileImage, webImage, userId, productId)" });
+            return res.status(400).send({ error: "Please Fill all the fields (mobileImage, webImage)" });
         }
         next();
     },
@@ -15,25 +15,36 @@ const addBanner = {
             const { mobileImage, webImage, userId, productId, externalLink } = req.body;
             
             // Verify user exists
-            const user = await User.findById(userId);
-            if (!user) {
-                return res.status(404).send({ error: "User not found" });
+            if (userId) {
+                const user = await User.findById(userId);
+                if (!user) {
+                    return res.status(404).send({ error: "User not found" });
+                }
             }
             
             // Verify product exists
-            const product = await Product.findById(productId);
-            if (!product) {
-                return res.status(404).send({ error: "Product not found" });
+            if (productId) {
+                const product = await Product.findById(productId);
+                if (!product) {
+                        return res.status(404).send({ error: "Product not found" });
+                    }
             }
 
-            // Create new banner
-            const banner = await Banner.create({
+            let bannerData = {
                 mobileImage,
-                webImage,
-                userId,
-                productId,
-                externalLink
-            });
+                webImage
+            }
+            if (userId) {
+                bannerData.userId = userId;
+            }
+            if (productId) {
+                bannerData.productId = productId;
+            }
+            if (externalLink) {
+                bannerData.externalLink = externalLink;
+            }
+            // Create new banner
+            const banner = await Banner.create(bannerData);
 
             if (userId) {
                 await banner.populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1 });
