@@ -204,6 +204,11 @@ const productSchema = new mongoose.Schema({
     type: String, 
     trim: true ,
     required: [false, 'Vendor phone is optional']
+  },
+  driver_type: { 
+    type: String, 
+    trim: true,
+    required: [false, 'Driver type is optional']
   }
 }, { 
   timestamps: true,

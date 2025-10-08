@@ -27,7 +27,7 @@ const listProducts = {
       if (qIsDelete !== undefined) criteria.isDelete = qIsDelete;
 
       // Optional filters
-      const stringFilters = ['category', 'subCategory', 'rentType', 'vendorName', 'vendorPhone'];
+      const stringFilters = ['category', 'subCategory', 'rentType', 'vendorName', 'vendorPhone', 'driver_type'];
       stringFilters.forEach((key) => {
         const value = req.query[key];
         if (value) criteria[key] = { $regex: value, $options: 'i' };

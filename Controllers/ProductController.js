@@ -51,7 +51,8 @@ const createProduct = {
             carColor, 
             driveTrain,
             vendorName,
-            vendorPhone
+            vendorPhone,
+            driver_type
         } = req.body;
         const { _id: userId } = req.user;
         if (images.length > 5) {
@@ -150,7 +151,8 @@ const createProduct = {
             carColor,
             driveTrain,
             vendorName,
-            vendorPhone
+            vendorPhone,
+            driver_type
         });
         await product.save();
         await updateProductLimit(userId, true, res);
@@ -254,7 +256,7 @@ const editProduct = {
     },
     controller: async (req, res) => {
         const {productId} = req.query;
-        const {title, description, price, location, images, compressedImages, rentType, discount=0, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain, vendorName, vendorPhone} = req.body;
+        const {title, description, price, location, images, compressedImages, rentType, discount=0, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain, vendorName, vendorPhone, driver_type} = req.body;
         try {
             let editedProduct = {};
             if (title) editedProduct.title = title;
@@ -291,6 +293,7 @@ const editProduct = {
             if (driveTrain) editedProduct.driveTrain = driveTrain;
             if (vendorName) editedProduct.vendorName = vendorName;
             if (vendorPhone) editedProduct.vendorPhone = vendorPhone;
+            if (driver_type) editedProduct.driver_type = driver_type;
 
             // calculate discount price
             if (discount) {
