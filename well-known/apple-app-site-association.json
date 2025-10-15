@@ -1,0 +1,25 @@
+{
+    "applinks": {
+      "apps": [],
+      "details": [
+        {
+          "appIDs": [
+            "32BBNXD889.com.rent.el.in"
+          ],
+          "paths": [
+            "*"
+          ],
+          "components": [
+            {
+              "/": "/*"
+            }
+          ]
+        }
+      ]
+    },
+    "webcredentials": {
+      "apps": [
+        "32BBNXD889.com.rent.el.in"
+      ]
+    }
+  }
