@@ -23,15 +23,15 @@ const VerifyToken = async (req, res, next) => {
 
 
             if (!currUser) {
-                return res.status(401).send({error: "User Not Found"});
+                return res.status(404).send({error: "User Not Found"});
             }
 
             if (currUser.isDeleted) {
-                return res.status(401).send({error: "User is Deleted"});
+                return res.status(404).send({error: "User is Deleted"});
             }
 
             if (!currUser.isActive) {
-                return res.status(401).send({error: "User is Not Active"});
+                return res.status(404).send({error: "User is Not Active"});
             }
 
             req.token = token;
@@ -40,7 +40,7 @@ const VerifyToken = async (req, res, next) => {
             next();
 
         } else {
-            return res.status(401).send({error:"Please Login to Perform This"})
+            return res.status(404).send({error:"Please Login to Perform This"})
         }
     } catch (err) {
         res.status(401).send({error:"Unauthorized User"});

@@ -22,7 +22,7 @@ const VerifyAdminToken = async (req, res, next) => {
     }).lean();
 
     if (!admin) {
-      return res.status(401).send({ error: 'Admin Not Found' });
+      return res.status(404).send({ error: 'Admin Not Found' });
     }
 
     req.token = token;

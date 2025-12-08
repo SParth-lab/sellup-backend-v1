@@ -26,15 +26,15 @@ export const login = {
             const _user = await User.findOne(criteria).lean();
 
             if (!_user) {
-                return res.status(401).send({error: "User Not Found"});
+                return res.status(404).send({error: "User Not Found"});
             }
 
             if (_user.isDeleted) {
-                return res.status(401).send({error: "User is Deleted"});
+                return res.status(404).send({error: "User is Deleted"});
             }
 
             if (!_user.isActive) {
-                return res.status(401).send({error: "User is Not Active"});
+                return res.status(404).send({error: "User is Not Active"});
             }
 
             // Compare passwords
