@@ -1,10 +1,17 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const client = require("./Redis.js");
+const fs = require("fs");
 const path = require("path");
 
-// Image paths for CID attachments
+// Load and convert images to base64
 const imagePath = path.join(__dirname, "../imges");
+const topLogo = fs.readFileSync(path.join(imagePath, "top_logo.png")).toString("base64");
+const bottomLogo = fs.readFileSync(path.join(imagePath, "bottom_logo.png")).toString("base64");
+const youtubeIcon = fs.readFileSync(path.join(imagePath, "youtube.png")).toString("base64");
+const facebookIcon = fs.readFileSync(path.join(imagePath, "facebook.png")).toString("base64");
+const instagramIcon = fs.readFileSync(path.join(imagePath, "Instagram.png")).toString("base64");
+const threadsIcon = fs.readFileSync(path.join(imagePath, "threads.png")).toString("base64");
 
 // Generate OTP
 const generateOTP = () =>
@@ -44,38 +51,6 @@ const createEmailAndSend = async (
         to: email,
         subject: subject,
         html: emailTemplate,
-        attachments: [
-            {
-                filename: "top_logo.png",
-                path: path.join(imagePath, "top_logo.png"),
-                cid: "topLogo",
-            },
-            {
-                filename: "bottom_logo.png",
-                path: path.join(imagePath, "bottom_logo.png"),
-                cid: "bottomLogo",
-            },
-            {
-                filename: "youtube.png",
-                path: path.join(imagePath, "youtube.png"),
-                cid: "youtubeIcon",
-            },
-            {
-                filename: "facebook.png",
-                path: path.join(imagePath, "facebook.png"),
-                cid: "facebookIcon",
-            },
-            {
-                filename: "instagram.png",
-                path: path.join(imagePath, "Instagram.png"),
-                cid: "instagramIcon",
-            },
-            {
-                filename: "threads.png",
-                path: path.join(imagePath, "threads.png"),
-                cid: "threadsIcon",
-            },
-        ],
     };
     try {
         transporter.sendMail(mailOptions, (error, info) => {
@@ -106,7 +81,7 @@ const changePasswordTemplate = (name, lastName, otp) => {
                     <!-- Top Logo -->
                     <tr>
                         <td style="padding-bottom:20px; text-align:center;">
-                            <img src="cid:topLogo" alt="Rentel Logo" style="width:auto; height:55px;" />
+                            <img src="data:image/png;base64,${topLogo}" alt="Rentel Logo" style="width:auto; height:55px;" />
                         </td>
                     </tr>
                     <!-- Heading -->
@@ -159,7 +134,7 @@ const changePasswordTemplate = (name, lastName, otp) => {
                     <!-- Bottom Logo -->
                     <tr>
                         <td align="center" style="padding-top:20px;">
-                            <img src="cid:bottomLogo" alt="Rentel" style="max-width:180px; height:auto;" />
+                            <img src="data:image/png;base64,${bottomLogo}" alt="Rentel" style="max-width:180px; height:auto;" />
                         </td>
                     </tr>
 
@@ -174,18 +149,18 @@ const changePasswordTemplate = (name, lastName, otp) => {
                     <tr>
                         <td align="center" style="padding-top:15px;">
                             <a href="https://www.youtube.com/" style="margin:0 8px; display:inline-block;">
-                                <img src="cid:youtubeIcon" alt="YouTube" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${youtubeIcon}" alt="YouTube" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.facebook.com/profile.php?id=61584278505265"
                                 style="margin:0 8px; display:inline-block;">
-                                <img src="cid:facebookIcon" alt="Facebook" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${facebookIcon}" alt="Facebook" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.instagram.com/rentel.in/?igsh=bHRtN3JxNzd1ZHNv#"
                                 style="margin:0 8px; display:inline-block;">
-                                <img src="cid:instagramIcon" alt="Instagram" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${instagramIcon}" alt="Instagram" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.threads.com/@rentel.in" style="margin:0 8px; display:inline-block;">
-                                <img src="cid:threadsIcon" alt="Threads" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${threadsIcon}" alt="Threads" style="width:32px; height:32px;" />
                             </a>
                         </td>
                     </tr>
@@ -239,7 +214,7 @@ const resetPasswordTemplate = (name, lastName, otp) => {
                     <!-- Top Logo -->
                     <tr>
                         <td style="padding-bottom:20px; text-align:center;">
-                            <img src="cid:topLogo" alt="Rentel Logo" style="width:auto; height:55px;" />
+                            <img src="data:image/png;base64,${topLogo}" alt="Rentel Logo" style="width:auto; height:55px;" />
                         </td>
                     </tr>
                     <!-- Heading -->
@@ -292,7 +267,7 @@ const resetPasswordTemplate = (name, lastName, otp) => {
                     <!-- Bottom Logo -->
                     <tr>
                         <td align="center" style="padding-top:20px;">
-                            <img src="cid:bottomLogo" alt="Rentel" style="max-width:180px; height:auto;" />
+                            <img src="data:image/png;base64,${bottomLogo}" alt="Rentel" style="max-width:180px; height:auto;" />
                         </td>
                     </tr>
 
@@ -307,18 +282,18 @@ const resetPasswordTemplate = (name, lastName, otp) => {
                     <tr>
                         <td align="center" style="padding-top:15px;">
                             <a href="https://www.youtube.com/" style="margin:0 8px; display:inline-block;">
-                                <img src="cid:youtubeIcon" alt="YouTube" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${youtubeIcon}" alt="YouTube" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.facebook.com/profile.php?id=61584278505265"
                                 style="margin:0 8px; display:inline-block;">
-                                <img src="cid:facebookIcon" alt="Facebook" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${facebookIcon}" alt="Facebook" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.instagram.com/rentel.in/?igsh=bHRtN3JxNzd1ZHNv#"
                                 style="margin:0 8px; display:inline-block;">
-                                <img src="cid:instagramIcon" alt="Instagram" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${instagramIcon}" alt="Instagram" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.threads.com/@rentel.in" style="margin:0 8px; display:inline-block;">
-                                <img src="cid:threadsIcon" alt="Threads" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${threadsIcon}" alt="Threads" style="width:32px; height:32px;" />
                             </a>
                         </td>
                     </tr>
@@ -371,7 +346,7 @@ const verifyEmailTemplate = (name, otp) => {
                     <!-- Top Logo -->
                     <tr>
                         <td style="padding-bottom:20px; text-align:center;">
-                            <img src="cid:topLogo" alt="Rentel Logo" style="width:auto; height:55px;" />
+                            <img src="data:image/png;base64,${topLogo}" alt="Rentel Logo" style="width:auto; height:55px;" />
                         </td>
                     </tr>
                     <!-- Heading -->
@@ -424,7 +399,7 @@ const verifyEmailTemplate = (name, otp) => {
                     <!-- Bottom Logo -->
                     <tr>
                         <td align="center" style="padding-top:20px;">
-                            <img src="cid:bottomLogo" alt="Rentel" style="max-width:180px; height:auto;" />
+                            <img src="data:image/png;base64,${bottomLogo}" alt="Rentel" style="max-width:180px; height:auto;" />
                         </td>
                     </tr>
 
@@ -439,18 +414,18 @@ const verifyEmailTemplate = (name, otp) => {
                     <tr>
                         <td align="center" style="padding-top:15px;">
                             <a href="https://www.youtube.com/" style="margin:0 8px; display:inline-block;">
-                                <img src="cid:youtubeIcon" alt="YouTube" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${youtubeIcon}" alt="YouTube" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.facebook.com/profile.php?id=61584278505265"
                                 style="margin:0 8px; display:inline-block;">
-                                <img src="cid:facebookIcon" alt="Facebook" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${facebookIcon}" alt="Facebook" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.instagram.com/rentel.in/?igsh=bHRtN3JxNzd1ZHNv#"
                                 style="margin:0 8px; display:inline-block;">
-                                <img src="cid:instagramIcon" alt="Instagram" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${instagramIcon}" alt="Instagram" style="width:32px; height:32px;" />
                             </a>
                             <a href="https://www.threads.com/@rentel.in" style="margin:0 8px; display:inline-block;">
-                                <img src="cid:threadsIcon" alt="Threads" style="width:32px; height:32px;" />
+                                <img src="data:image/png;base64,${threadsIcon}" alt="Threads" style="width:32px; height:32px;" />
                             </a>
                         </td>
                     </tr>
