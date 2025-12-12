@@ -1,4 +1,4 @@
-const { createEmailAndSend, changePasswordTemplate, generateOTP, resetPasswordTemplate, verifyEmailTemplate } = require("../Helper/Email.js");
+const { createEmailAndSend, changePasswordTemplate, generateOTP, resetPasswordTemplate, verifyEmailTemplate, saveDebugEmail } = require("../Helper/Email.js");
 const client = require('../Helper/Redis.js');
 const User = require("../Models/User.js");
 
@@ -10,7 +10,7 @@ const sendEmail = {
         next();
     },
     controller: async (req, res) => {
-        const { email, isResetPassword=false, isForgotPassword=false } = req.body;
+        const { email, isResetPassword=false, isForgotPassword=false, debug=false } = req.body;
 
         const otp = generateOTP();
         const name = email.split("@")[0];
@@ -22,14 +22,29 @@ const sendEmail = {
 
             emailTemplate = isResetPassword ? resetPasswordTemplate(user.name, user.lastName, otp) : changePasswordTemplate(user.name, user.lastName, otp);
         }
-        const subject = isResetPassword ? "🚀 One Step Away – Reset Your Password" : isForgotPassword ? "📬 Forgot Password Request Received – Let’s Get You Back In" : "🎉 Almost There! Confirm Your Email to Join Rentel";
+        
+        const subject = isResetPassword ? "🚀 One Step Away – Reset Your Password" : isForgotPassword ? "📬 Forgot Password Request Received – Let's Get You Back In" : "🎉 Almost There! Confirm Your Email to Join Rentel";
+        
         try {
             await client.del(email);
-            await createEmailAndSend(email, subject, emailTemplate, otp);
-            // here delete all old otp from redis
-            return res.status(200).json({ message: "OTP sent successfully" });
+            
+            // Optional: Save debug HTML for browser testing (pass debug=true in request)
+            if (debug || process.env.DEBUG_EMAIL === "true") {
+                const debugPath = saveDebugEmail(emailTemplate, `debug_email_${email.replace('@', '_at_')}_${Date.now()}.html`);
+                console.log(`\n🔍 Debug mode enabled. HTML saved for inspection.`);
+                console.log(`   Open this file in your browser: ${debugPath}`);
+                console.log(`   OTP for testing: ${otp}\n`);
+            }
+            
+            await createEmailAndSend(email, subject, emailTemplate, otp, debug);
+            
+            return res.status(200).json({ 
+                message: "OTP sent successfully",
+                ...(debug && { debug_info: { otp, template_length: emailTemplate.length } })
+            });
         } catch (error) {
-            return res.status(500).json({ message: "Email failed to send", error });
+            console.error("❌ Email send failed:", error);
+            return res.status(500).json({ message: "Email failed to send", error: error.message });
         }
     }
 };
