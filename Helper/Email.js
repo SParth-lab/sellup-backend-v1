@@ -106,7 +106,7 @@ const changePasswordTemplate = (name, lastName, otp) => {
                     <!-- Top Logo -->
                     <tr>
                         <td style="padding-bottom:20px; text-align:center;">
-                            <img src="cid:topLogo" alt="Rentel Logo" style="max-width:200px; height:auto;" />
+                            <img src="cid:topLogo" alt="Rentel Logo" style="width:auto; height:55px;" />
                         </td>
                     </tr>
                     <!-- Heading -->
@@ -239,7 +239,7 @@ const resetPasswordTemplate = (name, lastName, otp) => {
                     <!-- Top Logo -->
                     <tr>
                         <td style="padding-bottom:20px; text-align:center;">
-                            <img src="cid:topLogo" alt="Rentel Logo" style="max-width:200px; height:auto;" />
+                            <img src="cid:topLogo" alt="Rentel Logo" style="width:auto; height:55px;" />
                         </td>
                     </tr>
                     <!-- Heading -->
@@ -371,7 +371,7 @@ const verifyEmailTemplate = (name, otp) => {
                     <!-- Top Logo -->
                     <tr>
                         <td style="padding-bottom:20px; text-align:center;">
-                            <img src="cid:topLogo" alt="Rentel Logo" style="max-width:200px; height:auto;" />
+                            <img src="cid:topLogo" alt="Rentel Logo" style="width:auto; height:55px;" />
                         </td>
                     </tr>
                     <!-- Heading -->
