@@ -38,11 +38,10 @@ const createUser = {
             // Encrypt the password before saving
             const passwordHashResult = await User.generatePasswordHash(password);
             const { hash } = passwordHashResult || {};
-            const payload = {
+            let payload = {
                 name,
                 lastName,
                 email,
-                phoneNumber,
                 address: address || "",
                 area: area || "",
                 city: city || "",
@@ -53,6 +52,9 @@ const createUser = {
                 fullAddress: fullAddress || {},
                 longitude: longitude || 0,
                 latitude: latitude || 0
+            }
+            if (phoneNumber) {
+                payload.phoneNumber = phoneNumber;
             }
 
             // Create a new user instance
