@@ -60,10 +60,15 @@ const createUser = {
             // Save the user to the database
             const savedUser = await newUser.save();
 
+            // Generate login token for the newly created user
+            const token = await generateToken(savedUser);
+            const userWithoutPassword = savedUser.toObject();
+            delete userWithoutPassword.password;
 
             return res.status(200).send({
-                "message": "Account Creation Successful",
-                user: savedUser
+                message: "Account Creation Successful",
+                token,
+                user: userWithoutPassword
             });
         }
         catch (e) {
