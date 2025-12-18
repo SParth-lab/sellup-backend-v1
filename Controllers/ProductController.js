@@ -109,6 +109,8 @@ const createProduct = {
             if (discountPrice < 0) {
                 discountPrice = price;
             }
+        } else if (discount == 0) {
+            discountPrice = price;
         }
 
         // Create a new product
@@ -301,6 +303,8 @@ const editProduct = {
                 if (editedProduct.discountPrice < 0) {
                     editedProduct.discountPrice = price;
                 }
+            } else if (discount === 0) { 
+                editedProduct.discountPrice = price;
             }
 
             const product = await Product.findByIdAndUpdate(productId, editedProduct, { new: true });
