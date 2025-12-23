@@ -258,7 +258,7 @@ const editProduct = {
     },
     controller: async (req, res) => {
         const {productId} = req.query;
-        const {title, description, price, location, images, compressedImages, rentType, discount=0, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain, vendorName, vendorPhone, driver_type} = req.body;
+        const {title, description, price, location, images, compressedImages, rentType, discount=0, size, fitType, clothColor, material, sleeveLength, neckStyle, patternPrint, customAddress=false, propertyType, squareFootArea, noOfBedrooms, noOfBathrooms, furnishingStatus, ownershipType, amenities, propertyCondition, bodyType, carModel, carYear, transmission, fuelType, mileage, carColor, driveTrain, vendorName, vendorPhone, driver_type, inRent} = req.body;
         try {
             let editedProduct = {};
             if (title) editedProduct.title = title;
@@ -296,6 +296,7 @@ const editProduct = {
             if (vendorName) editedProduct.vendorName = vendorName;
             if (vendorPhone) editedProduct.vendorPhone = vendorPhone;
             if (driver_type) editedProduct.driver_type = driver_type;
+            if (inRent !== undefined) editedProduct.inRent = inRent;
 
             // calculate discount price
             if (discount) {

@@ -209,6 +209,10 @@ const productSchema = new mongoose.Schema({
     type: String, 
     trim: true,
     required: [false, 'Driver type is optional']
+  },
+  inRent: {
+    type: Boolean,
+    default: false
   }
 }, { 
   timestamps: true,
