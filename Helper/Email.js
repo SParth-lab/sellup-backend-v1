@@ -1,53 +1,17 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const client = require("./Redis.js");
-const fs = require("fs");
-const path = require("path");
-
-// ✅ PURE HTML/CSS EMAIL TEMPLATES
-// No images, no attachments, no base64, no external URLs
-// 100% compatible with Gmail, Outlook, Apple Mail, etc.
-console.log("✅ Email system using pure HTML/CSS templates (no images/attachments)");
 
 // Generate OTP
 const generateOTP = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
 
-// Debug function to save email HTML for testing in browser
-const saveDebugEmail = (htmlContent, filename = "debug_email.html") => {
-    try {
-        const debugPath = path.join(__dirname, filename);
-        fs.writeFileSync(debugPath, htmlContent, "utf8");
-        console.log(`📧 Debug email saved: ${debugPath}`);
-        return debugPath;
-    } catch (error) {
-        console.error("❌ Failed to save debug email:", error.message);
-    }
-};
-
-const createEmailAndSend = async (
-    email,
-    subject,
-    emailTemplate,
-    otp = null,
-    debug = false,
-) => {
+const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => {
     if (!otp) otp = generateOTP();
     await client.setEx(email, 300, otp);
 
     // Plain text version of the email
     const plainText = `Dear customer, ${otp} is your one time password (OTP), Please do not share the OTP with others. Regards, Team Rentel`;
-
-    // Debug: Log email info
-    if (debug || process.env.DEBUG_EMAIL === "true") {
-        console.log("\n📧 Email Debug Info:");
-        console.log(`   To: ${email}`);
-        console.log(`   Subject: ${subject}`);
-        console.log(`   Template length: ${emailTemplate.length} chars`);
-
-        // Save debug HTML file for browser inspection
-        saveDebugEmail(emailTemplate, `debug_email_${Date.now()}.html`);
-    }
 
     // Nodemailer Transporter
     const transporter = nodemailer.createTransport({
@@ -66,7 +30,6 @@ const createEmailAndSend = async (
         subject: subject,
         text: plainText,
         html: emailTemplate,
-        attachments: [], // ✅ MUST remain empty - no image attachments
     };
 
     try {
@@ -252,6 +215,5 @@ module.exports = {
     changePasswordTemplate,
     resetPasswordTemplate,
     verifyEmailTemplate,
-    saveDebugEmail,
 };
 
