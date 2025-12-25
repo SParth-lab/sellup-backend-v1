@@ -110,10 +110,17 @@ const changePasswordTemplate = (name, lastName, otp) => {
                         </td>
                     </tr>
 
-                    <!-- Message -->
+                    <!-- OTP Message -->
                     <tr>
-                        <td align="center" style="font-size:14px; color:#555; padding-top:10px;">
-                            Please make sure you never share this code with anyone.
+                        <td align="center" style="font-size:16px; color:#222; padding-top:15px;">
+                            is your one time password (OTP) for <strong>Change Your Password</strong>.
+                        </td>
+                    </tr>
+
+                    <!-- Warning Message -->
+                    <tr>
+                        <td align="center" style="font-size:14px; color:#555; padding-top:15px;">
+                            Please do not share the OTP with others.
                         </td>
                     </tr>
 
@@ -121,6 +128,13 @@ const changePasswordTemplate = (name, lastName, otp) => {
                     <tr>
                         <td align="center" style="font-size:14px; color:#555; padding-top:10px;">
                             <strong>Note:</strong> The code will expire in 5 minutes.
+                        </td>
+                    </tr>
+
+                    <!-- Regards -->
+                    <tr>
+                        <td align="center" style="font-size:14px; color:#222; padding-top:20px;">
+                            Regards,<br><strong>Team Rentel</strong>
                         </td>
                     </tr>
 
@@ -200,13 +214,13 @@ const changePasswordTemplate = (name, lastName, otp) => {
 const resetPasswordTemplate = (name, lastName, otp) => {
     return changePasswordTemplate(name, lastName, otp)
         .replace('<title>Change Password - Rentel</title>', '<title>Reset Password - Rentel</title>')
-        .replace('Here is your Change Password Verification Code:', 'Here is your Reset Password Verification Code:');
+        .replace('<strong>Change Your Password</strong>', '<strong>Reset Your Password</strong>');
 };
 
 const verifyEmailTemplate = (name, otp) => {
     return changePasswordTemplate(name, '', otp)
         .replace('<title>Change Password - Rentel</title>', '<title>Verify Email - Rentel</title>')
-        .replace('Here is your Change Password Verification Code:', 'Here is your Email Verification Code:');
+        .replace('<strong>Change Your Password</strong>', '<strong>Login</strong>');
 };
 
 module.exports = {

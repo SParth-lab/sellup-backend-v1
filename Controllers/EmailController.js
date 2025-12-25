@@ -27,7 +27,7 @@ const sendEmail = {
             ? `OTP for ${otp} - Reset Your Password` 
             : isForgotPassword 
                 ? `OTP for ${otp} - Change Your Password` 
-                : `OTP for Login ${otp} - Verify Your Email`;
+                : `OTP for ${otp} - Verify Your Email`;
         
         try {
             await client.del(email);
