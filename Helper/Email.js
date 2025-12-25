@@ -35,6 +35,9 @@ const createEmailAndSend = async (
     if (!otp) otp = generateOTP();
     await client.setEx(email, 300, otp);
 
+    // Plain text version of the email
+    const plainText = `Dear customer, ${otp} is your one time password (OTP), Please do not share the OTP with others. Regards, Team Rentel`;
+
     // Debug: Log email info
     if (debug || process.env.DEBUG_EMAIL === "true") {
         console.log("\n📧 Email Debug Info:");
@@ -58,9 +61,10 @@ const createEmailAndSend = async (
     });
 
     const mailOptions = {
-        from: process.env.SMTP_USER,
+        from: `Rentel <${process.env.SMTP_USER}>`,
         to: email,
         subject: subject,
+        text: plainText,
         html: emailTemplate,
         attachments: [], // ✅ MUST remain empty - no image attachments
     };

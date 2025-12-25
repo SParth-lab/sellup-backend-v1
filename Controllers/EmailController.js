@@ -23,7 +23,11 @@ const sendEmail = {
             emailTemplate = isResetPassword ? resetPasswordTemplate(user.name, user.lastName, otp) : changePasswordTemplate(user.name, user.lastName, otp);
         }
         
-        const subject = isResetPassword ? "🚀 One Step Away – Reset Your Password" : isForgotPassword ? "📬 Forgot Password Request Received – Let's Get You Back In" : "🎉 Almost There! Confirm Your Email to Join Rentel";
+        const subject = isResetPassword 
+            ? `OTP for ${otp} - Reset Your Password` 
+            : isForgotPassword 
+                ? `OTP for ${otp} - Change Your Password` 
+                : `OTP for Login ${otp} - Verify Your Email`;
         
         try {
             await client.del(email);
