@@ -213,6 +213,10 @@ const productSchema = new mongoose.Schema({
   inRent: {
     type: Boolean,
     default: false
+  },
+  rentedDates: {
+    type: [String],
+    default: []
   }
 }, { 
   timestamps: true,

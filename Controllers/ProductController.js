@@ -336,4 +336,82 @@ const deleteProduct = {
     }
 }
 
-module.exports = { createProduct, getProducts, editProduct, deleteProduct };
+// Add/Edit rented dates - replaces entire array
+const updateRentedDates = {
+    validator: async (req, res, next) => {
+        const { productId, dates } = req.body;
+        if (!productId || !dates || !Array.isArray(dates)) {
+            return res.status(400).send({ error: "Please provide productId and dates array" });
+        }
+        next();
+    },
+    controller: async (req, res) => {
+        try {
+            const { productId, dates } = req.body;
+            const { _id: userId } = req.user;
+
+            // Check if product exists and is not deleted for this user
+            const product = await Product.findOne({ 
+                _id: productId, 
+                userId: userId, 
+                isDelete: false 
+            });
+
+            if (!product) {
+                return res.status(404).send({ error: "Product not found or has been deleted" });
+            }
+
+            product.rentedDates = dates;
+            await product.save();
+
+            return res.status(200).send({ 
+                message: "Rented dates updated successfully", 
+                rentedDates: product.rentedDates
+            });
+        } catch (error) {
+            console.error("Error updating rented dates:", error);
+            return res.status(500).send({ error: "Internal Server Error" });
+        }
+    }
+};
+
+// Delete all rented dates - makes array empty
+const deleteRentedDates = {
+    validator: async (req, res, next) => {
+        const { productId } = req.query;
+        if (!productId) {
+            return res.status(400).send({ error: "Please provide productId" });
+        }
+        next();
+    },
+    controller: async (req, res) => {
+        try {
+            const { productId } = req.query;
+            const { _id: userId } = req.user;
+
+            // Check if product exists and is not deleted for this user
+            const product = await Product.findOne({ 
+                _id: productId, 
+                userId: userId, 
+                isDelete: false 
+            });
+
+            if (!product) {
+                return res.status(404).send({ error: "Product not found or has been deleted" });
+            }
+
+            product.rentedDates = [];
+            await product.save();
+
+            return res.status(200).send({ 
+                message: "Rented dates cleared successfully",
+                rentedDates: product.rentedDates
+            });
+        } catch (error) {
+            console.error("Error deleting rented dates:", error);
+            return res.status(500).send({ error: "Internal Server Error" });
+        }
+    }
+};
+
+module.exports = { createProduct, getProducts, editProduct, deleteProduct, updateRentedDates, deleteRentedDates };

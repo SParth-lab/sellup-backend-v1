@@ -1,0 +1,75 @@
+{
+	"info": {
+		"name": "Sellup - Rented Dates API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "authToken",
+			"value": "YOUR_AUTH_TOKEN"
+		},
+		{
+			"key": "productId",
+			"value": "YOUR_PRODUCT_ID"
+		}
+	],
+	"item": [
+		{
+			"name": "Update Rented Dates",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": \"{{productId}}\",\n    \"dates\": [\n        \"2025-12-22 19:21:36.882816\",\n        \"2025-12-25 10:00:00.000\",\n        \"2025-12-30 15:30:00.000\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/products/rented-dates/update",
+					"host": ["{{baseUrl}}"],
+					"path": ["products", "rented-dates", "update"]
+				},
+				"description": "Add or update rented dates - replaces entire array with provided dates"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Rented Dates",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/products/rented-dates/delete?productId={{productId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["products", "rented-dates", "delete"],
+					"query": [
+						{
+							"key": "productId",
+							"value": "{{productId}}"
+						}
+					]
+				},
+				"description": "Delete all rented dates - makes array empty"
+			},
+			"response": []
+		}
+	]
+}
+
