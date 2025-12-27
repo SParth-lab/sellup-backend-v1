@@ -1,17 +1,48 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const client = require("./Redis.js");
+const { logCommunicationAudit, createAuditContext, getResponseTime } = require("./AuditService.js");
 
 // Generate OTP
 const generateOTP = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
 
-const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => {
+/**
+ * Creates and sends an email with OTP
+ * 
+ * @param {string} email - Recipient email address
+ * @param {string} subject - Email subject
+ * @param {string} emailTemplate - HTML email template
+ * @param {string|null} otp - OTP code (will be stored in Redis, NOT logged)
+ * @param {Object} auditContext - Audit context for tracking
+ * @param {string} [auditContext.requestId] - Correlation ID
+ * @param {string} [auditContext.triggeredBy] - User ID or "system"
+ * @param {string} [auditContext.purpose] - Purpose of the email
+ * @param {string} [auditContext.ipAddress] - Requester IP
+ * @returns {Promise<Object>} - Result with success status and provider info
+ */
+const createEmailAndSend = async (email, subject, emailTemplate, otp = null, auditContext = null) => {
+    // Create audit context if not provided
+    const context = auditContext || createAuditContext({ purpose: 'email_verification' });
+    const startTime = context.startTime || Date.now();
+    
     if (!otp) otp = generateOTP();
     await client.setEx(email, 300, otp);
 
-    // Plain text version of the email
-    const plainText = `Dear customer, ${otp} is your one time password (OTP), Please do not share the OTP with others. Regards, Team Rentel`;
+    // Determine purpose from subject (for backward compatibility)
+    let purpose = context.purpose || 'other';
+    if (!auditContext) {
+        if (subject.toLowerCase().includes('reset')) {
+            purpose = 'reset_password';
+        } else if (subject.toLowerCase().includes('change')) {
+            purpose = 'change_password';
+        } else if (subject.toLowerCase().includes('verify') || subject.toLowerCase().includes('login')) {
+            purpose = 'login_verification';
+        }
+    }
+
+    // Plain text version of the email (no OTP in audit, but kept for email)
+    const plainText = `Dear customer, Your OTP is provided. Please do not share the OTP with others. Regards, Team Rentel`;
 
     // Nodemailer Transporter
     const transporter = nodemailer.createTransport({
@@ -32,18 +63,67 @@ const createEmailAndSend = async (email, subject, emailTemplate, otp = null) => 
         html: emailTemplate,
     };
 
-    try {
-        transporter.sendMail(mailOptions, (error, info) => {
+    // Use Promise-based sendMail for proper async/await and audit logging
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, async (error, info) => {
+            const responseTimeMs = Date.now() - startTime;
+            
             if (error) {
                 console.error("❌ Email send error:", error);
+                
+                // Log failed audit (non-blocking)
+                await logCommunicationAudit({
+                    channel: 'email',
+                    eventType: 'send_email',
+                    recipient: email,
+                    templateName: purpose,
+                    purpose: purpose,
+                    status: 'failed',
+                    error: error,
+                    providerResponse: null,
+                    triggeredBy: context.triggeredBy || 'system',
+                    requestId: context.requestId,
+                    provider: 'nodemailer',
+                    responseTimeMs: responseTimeMs,
+                    ipAddress: context.ipAddress
+                });
+                
+                reject(error);
                 return;
             }
+            
             console.log("✅ Email sent successfully:", info.response);
+            
+            // Log success audit (non-blocking)
+            await logCommunicationAudit({
+                channel: 'email',
+                eventType: 'send_email',
+                recipient: email,
+                templateName: purpose,
+                purpose: purpose,
+                status: 'success',
+                error: null,
+                providerResponse: {
+                    messageId: info.messageId,
+                    response: info.response,
+                    accepted: info.accepted,
+                    rejected: info.rejected
+                },
+                triggeredBy: context.triggeredBy || 'system',
+                requestId: context.requestId,
+                provider: 'nodemailer',
+                responseTimeMs: responseTimeMs,
+                ipAddress: context.ipAddress
+            });
+            
+            resolve({
+                success: true,
+                messageId: info.messageId,
+                response: info.response,
+                requestId: context.requestId
+            });
         });
-    } catch (error) {
-        console.error("❌ Email send exception:", error);
-        throw error;
-    }
+    });
 };
 
 // Base email template with configurable heading
@@ -198,4 +278,3 @@ module.exports = {
     resetPasswordTemplate,
     verifyEmailTemplate,
 };
-

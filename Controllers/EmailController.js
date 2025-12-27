@@ -1,4 +1,5 @@
 const { createEmailAndSend, changePasswordTemplate, generateOTP, resetPasswordTemplate, verifyEmailTemplate } = require("../Helper/Email.js");
+const { createAuditContext } = require("../Helper/AuditService.js");
 const client = require('../Helper/Redis.js');
 const User = require("../Models/User.js");
 
@@ -11,6 +12,13 @@ const sendEmail = {
     },
     controller: async (req, res) => {
         const { email, isResetPassword = false, isForgotPassword = false } = req.body;
+
+        // Create audit context with request information
+        const auditContext = createAuditContext({
+            triggeredBy: req.user?.id || req.user?._id || 'anonymous',
+            ipAddress: req.ip || req.headers['x-forwarded-for'] || req.connection?.remoteAddress,
+            purpose: isResetPassword ? 'reset_password' : isForgotPassword ? 'change_password' : 'login_verification'
+        });
 
         const otp = generateOTP();
         const name = email.split("@")[0];
@@ -31,10 +39,12 @@ const sendEmail = {
         
         try {
             await client.del(email);
-            await createEmailAndSend(email, subject, emailTemplate, otp);
+            // Pass audit context to createEmailAndSend
+            await createEmailAndSend(email, subject, emailTemplate, otp, auditContext);
             return res.status(200).json({ message: "OTP sent successfully" });
         } catch (error) {
             console.error("❌ Email send failed:", error);
+            // Audit is already logged in createEmailAndSend for failures
             return res.status(500).json({ message: "Email failed to send", error: error.message });
         }
     }
