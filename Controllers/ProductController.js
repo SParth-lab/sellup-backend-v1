@@ -308,7 +308,8 @@ const editProduct = {
                 editedProduct.discountPrice = price;
             }
 
-            const product = await Product.findByIdAndUpdate(productId, editedProduct, { new: true });
+            const product = await Product.findByIdAndUpdate(productId, editedProduct, { new: true })
+                .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1,avatar: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1, isAdsEnable: 1 }).lean();
             if (!product) {
                 return res.status(404).send({ error: "Product not found" });
             }
