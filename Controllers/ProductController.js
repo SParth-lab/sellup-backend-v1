@@ -237,12 +237,20 @@ const getProducts = {
             .limit(limit)
             .populate('userId', { name: 1, lastName: 1, email: 1, phoneNumber: 1, fullAddress: 1, productCount: 1, productLimit: 1, avatar: 1, isCallEnabled: 1, isChatEnabled: 1, latitude: 1, longitude: 1, isAdsEnable: 1 })
             .lean();
+
+        // If subCategory is not available, use category instead
+        products.forEach(product => {
+            if (!product.subCategory && product.category) {
+                product.subCategory = product.category;
+            }
+        });
+
         if (productId) {
             const product = products.find(product => product._id + "" === productId);
             const reviews = await Review.find({productId: productId, isDelete: false})
                 .populate('userId', { name: 1, lastName: 1,avatar: 1 })
                 .lean();
-            if (reviews &&reviews?.length > 0) {
+            if (reviews && reviews?.length > 0) {
                 product.reviews = reviews || [];
             }
             return res.status(200).send({ message: "Product Fetched Successfully", product: product || {} });
