@@ -20,7 +20,7 @@ const generateToken = async (user) => {
     };
     // Define the options for the token
     const options = {
-      expiresIn: 60 * 60 * 24  // 24 hours in seconds
+      expiresIn: 60 * 60 * 24 * 7  // 7 days in seconds
     };
     return JWT.sign(payload, process.env.JWT_SEC_KEY, options);
   } catch (error) {
